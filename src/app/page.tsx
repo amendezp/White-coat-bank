@@ -131,6 +131,26 @@ function PerkIcon({ type }: { type: string }) {
 }
 
 /* ============================================
+   THEME TOGGLE ICONS
+   ============================================ */
+
+function SunIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+    </svg>
+  );
+}
+
+function MoonIcon() {
+  return (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+    </svg>
+  );
+}
+
+/* ============================================
    CREDIT CARD COMPONENT
    ============================================ */
 
@@ -168,7 +188,7 @@ function CreditCardVisual() {
             <div className="text-[10px] sm:text-[10px] font-light tracking-[0.3em] uppercase text-[#C9A96E]/70">
               White Coat Bank
             </div>
-            <div className="mt-0.5 text-[7px] sm:text-[8px] font-light tracking-[0.2em] uppercase text-white/30">
+            <div className="mt-0.5 text-[7px] sm:text-[8px] font-light tracking-[0.2em] uppercase" style={{ color: "var(--text-card-edition)" }}>
               Physician Edition
             </div>
           </div>
@@ -182,7 +202,7 @@ function CreditCardVisual() {
         {/* Chip + Contactless */}
         <div className="relative z-10 flex items-center gap-2 sm:gap-3">
           <div className="card-chip" />
-          <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white/20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+          <svg className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: "var(--icon-contactless)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
             <path d="M8.5 16.5a7.5 7.5 0 010-9" strokeLinecap="round" />
             <path d="M5 19a11.5 11.5 0 010-14" strokeLinecap="round" />
             <path d="M12 13.5a3.5 3.5 0 010-3" strokeLinecap="round" />
@@ -193,10 +213,10 @@ function CreditCardVisual() {
         <div className="relative z-10">
           <div className="flex items-end justify-between">
             <div>
-              <div className="text-[8px] sm:text-[10px] text-white/25 tracking-widest mb-1">
+              <div className="text-[8px] sm:text-[10px] tracking-widest mb-1" style={{ color: "var(--text-card-num)" }}>
                 ****&nbsp;&nbsp;****&nbsp;&nbsp;****&nbsp;&nbsp;7890
               </div>
-              <div className="text-[9px] sm:text-[11px] font-medium tracking-[0.15em] text-white/60 uppercase">
+              <div className="text-[9px] sm:text-[11px] font-medium tracking-[0.15em] uppercase" style={{ color: "var(--text-card-name)" }}>
                 Dr. Jane Stanford
               </div>
             </div>
@@ -280,11 +300,15 @@ function SurveyModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay bg-black/80">
-      <div className="relative w-full max-w-lg rounded-2xl bg-[#0a0a0a] border border-white/8 p-6 sm:p-8 shadow-2xl animate-fade-in-up">
+      <div
+        className="relative w-full max-w-lg rounded-2xl border p-6 sm:p-8 shadow-2xl animate-fade-in-up"
+        style={{ backgroundColor: "var(--bg-modal)", borderColor: "var(--border-input)" }}
+      >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center text-white/30 hover:text-white/60 transition-colors rounded-full hover:bg-white/5"
+          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center transition-colors rounded-full"
+          style={{ color: "var(--text-muted)" }}
           aria-label="Close survey"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -297,9 +321,8 @@ function SurveyModal({
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className={`h-0.5 flex-1 rounded-full transition-colors ${
-                i <= step ? "bg-[#C9A96E]" : "bg-white/8"
-              }`}
+              className="h-0.5 flex-1 rounded-full transition-colors"
+              style={{ backgroundColor: i <= step ? "#C9A96E" : "var(--border-input)" }}
             />
           ))}
         </div>
@@ -308,8 +331,8 @@ function SurveyModal({
         <div className="mb-2 text-[11px] font-medium tracking-[0.2em] uppercase text-[#C9A96E]/80">
           Question {step + 1} of 3
         </div>
-        <h3 className="text-lg sm:text-xl font-semibold text-white mb-1">{q.title}</h3>
-        <p className="text-sm text-white/35 mb-6">{q.subtitle}</p>
+        <h3 className="text-lg sm:text-xl font-semibold mb-1" style={{ color: "var(--text-heading)" }}>{q.title}</h3>
+        <p className="text-sm mb-6" style={{ color: "var(--text-body)" }}>{q.subtitle}</p>
 
         {/* Options */}
         <div className="space-y-2.5 mb-8">
@@ -323,17 +346,16 @@ function SurveyModal({
             >
               <span className="flex items-center gap-3">
                 <span
-                  className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
-                    currentAnswer === option
-                      ? "border-[#C9A96E]"
-                      : "border-white/15"
-                  }`}
+                  className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors"
+                  style={{
+                    borderColor: currentAnswer === option ? "#C9A96E" : "var(--survey-radio-border)",
+                  }}
                 >
                   {currentAnswer === option && (
                     <span className="w-2.5 h-2.5 rounded-full bg-[#C9A96E]" />
                   )}
                 </span>
-                <span className={currentAnswer === option ? "text-white" : "text-white/50"}>
+                <span style={{ color: currentAnswer === option ? "var(--text-heading)" : "var(--survey-unselected-text)" }}>
                   {option}
                 </span>
               </span>
@@ -345,11 +367,12 @@ function SurveyModal({
         <button
           onClick={handleNext}
           disabled={!currentAnswer}
-          className={`btn-primary w-full py-3.5 rounded-xl text-sm font-semibold tracking-wide transition-all ${
-            currentAnswer
-              ? "bg-[#C9A96E] text-black hover:bg-[#E8D5A8]"
-              : "bg-white/5 text-white/20 cursor-not-allowed"
-          }`}
+          className="btn-primary w-full py-3.5 rounded-xl text-sm font-semibold tracking-wide transition-all"
+          style={{
+            backgroundColor: currentAnswer ? "#C9A96E" : "var(--survey-disabled-bg)",
+            color: currentAnswer ? "#000000" : "var(--survey-disabled-text)",
+            cursor: currentAnswer ? "pointer" : "not-allowed",
+          }}
         >
           {step < 2 ? "Continue" : "Submit & Claim Your $100"}
         </button>
@@ -358,7 +381,8 @@ function SurveyModal({
         {step < 2 && (
           <button
             onClick={() => setStep(step + 1)}
-            className="w-full mt-3 text-xs text-white/20 hover:text-white/40 transition-colors"
+            className="w-full mt-3 text-xs transition-colors"
+            style={{ color: "var(--text-dim)" }}
           >
             Skip this question
           </button>
@@ -380,6 +404,26 @@ export default function Home() {
   const [waitlistPosition, setWaitlistPosition] = useState<number | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  // Initialize theme from localStorage or system preference
+  useEffect(() => {
+    const stored = localStorage.getItem("wcb-theme");
+    if (stored === "light" || stored === "dark") {
+      setTheme(stored);
+      document.documentElement.setAttribute("data-theme", stored);
+    } else if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+      setTheme("light");
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("wcb-theme", next);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -411,16 +455,18 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white">
+    <div className="min-h-screen" style={{ backgroundColor: "var(--bg-page)", color: "var(--text-heading)" }}>
       {/* ============================================
           NAVBAR
           ============================================ */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-          scrolled
-            ? "bg-[#050505]/90 backdrop-blur-xl border-b border-white/5"
-            : "bg-transparent"
-        }`}
+        className="fixed top-0 left-0 right-0 z-40 transition-all duration-300"
+        style={{
+          backgroundColor: scrolled ? "var(--bg-nav)" : "transparent",
+          backdropFilter: scrolled ? "blur(20px)" : "none",
+          WebkitBackdropFilter: scrolled ? "blur(20px)" : "none",
+          borderBottom: scrolled ? "1px solid var(--border-nav)" : "1px solid transparent",
+        }}
       >
         <div className="max-w-7xl mx-auto px-5 sm:px-8 h-16 sm:h-20 flex items-center justify-between">
           {/* Logo */}
@@ -429,16 +475,19 @@ export default function Home() {
               <rect x="13" y="5" width="6" height="22" rx="1" />
               <rect x="5" y="13" width="22" height="6" rx="1" />
             </svg>
-            <span className="text-xs sm:text-sm font-semibold tracking-[0.1em] text-white">
+            <span className="text-xs sm:text-sm font-semibold tracking-[0.1em]" style={{ color: "var(--text-logo)" }}>
               WHITE COAT BANK
             </span>
           </a>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
-            <span className="text-[11px] tracking-[0.15em] uppercase text-white/25 font-medium">
+          <div className="hidden md:flex items-center gap-6">
+            <span className="text-[11px] tracking-[0.15em] uppercase font-medium" style={{ color: "var(--text-nav-tag)" }}>
               Exclusively for Physicians
             </span>
+            <button onClick={toggleTheme} className="theme-toggle" aria-label="Toggle theme">
+              {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+            </button>
             <a
               href="#waitlist"
               className="btn-primary text-xs font-semibold tracking-wide px-6 py-2.5 rounded-full bg-[#C9A96E] text-black hover:bg-[#E8D5A8] transition-colors"
@@ -447,29 +496,41 @@ export default function Home() {
             </a>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/5 transition-colors"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? (
-              <svg className="w-5 h-5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-5 h-5 text-white/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-              </svg>
-            )}
-          </button>
+          {/* Mobile Controls */}
+          <div className="md:hidden flex items-center gap-2">
+            <button onClick={toggleTheme} className="theme-toggle" aria-label="Toggle theme">
+              {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+            </button>
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="w-10 h-10 flex items-center justify-center rounded-lg transition-colors"
+              style={{ color: "var(--icon-menu)" }}
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu Dropdown */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-[#0a0a0a]/98 backdrop-blur-xl border-t border-white/5 animate-fade-in">
+          <div
+            className="md:hidden backdrop-blur-xl animate-fade-in"
+            style={{
+              backgroundColor: "var(--bg-nav)",
+              borderTop: "1px solid var(--border-nav)",
+            }}
+          >
             <div className="px-5 py-6 space-y-4">
-              <p className="text-[11px] tracking-[0.15em] uppercase text-white/25 font-medium">
+              <p className="text-[11px] tracking-[0.15em] uppercase font-medium" style={{ color: "var(--text-nav-tag)" }}>
                 Exclusively for Physicians
               </p>
               <a
@@ -491,13 +552,16 @@ export default function Home() {
         {/* Background Effects */}
         <div className="absolute inset-0 bg-radial-top" />
         <div className="absolute inset-0 bg-grid opacity-30" />
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-[#C9A96E]/[0.03] rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full blur-[120px] pointer-events-none" style={{ backgroundColor: "var(--glow-ambient)" }} />
 
         <div className="relative z-10 w-full max-w-5xl mx-auto px-5 sm:px-8 text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.03] border border-white/8 mb-8 sm:mb-10 animate-fade-in">
+          <div
+            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8 sm:mb-10 animate-fade-in"
+            style={{ backgroundColor: "var(--bg-badge)", border: "1px solid var(--border-input)" }}
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-[#C9A96E] animate-pulse" />
-            <span className="text-[10px] sm:text-[11px] tracking-[0.12em] uppercase text-white/40 font-medium">
+            <span className="text-[10px] sm:text-[11px] tracking-[0.12em] uppercase font-medium" style={{ color: "var(--text-subtle)" }}>
               Now accepting early access signups
             </span>
           </div>
@@ -512,7 +576,7 @@ export default function Home() {
           </h1>
 
           {/* Subheadline */}
-          <p className="text-base sm:text-lg md:text-xl text-white/35 max-w-2xl mx-auto mb-10 sm:mb-12 leading-relaxed animate-fade-in-up delay-200">
+          <p className="text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-10 sm:mb-12 leading-relaxed animate-fade-in-up delay-200" style={{ color: "var(--text-body)" }}>
             White Coat Bank underwrites your future — not just your credit score.
             Premium banking built exclusively for physicians.
           </p>
@@ -530,7 +594,12 @@ export default function Home() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
                   required
-                  className="w-full sm:flex-1 px-5 py-3.5 rounded-xl bg-white/[0.04] border border-white/8 text-white text-sm placeholder:text-white/20 focus:border-[#C9A96E] focus:ring-0 transition-all"
+                  className="w-full sm:flex-1 px-5 py-3.5 rounded-xl text-sm focus:border-[#C9A96E] focus:ring-0 transition-all"
+                  style={{
+                    backgroundColor: "var(--bg-input)",
+                    border: "1px solid var(--border-input)",
+                    color: "var(--text-heading)",
+                  }}
                 />
                 <button
                   type="submit"
@@ -542,13 +611,13 @@ export default function Home() {
             ) : (
               <div className="animate-fade-in-up max-w-md mx-auto">
                 <div className="px-6 py-5 rounded-2xl bg-[#C9A96E]/[0.06] border border-[#C9A96E]/20 text-center">
-                  <p className="text-[#E8D5A8] font-semibold">
+                  <p className="text-[#C9A96E] font-semibold">
                     You&apos;re on the list.{" "}
                     {waitlistPosition && (
-                      <span className="text-white/40">#{waitlistPosition}</span>
+                      <span style={{ color: "var(--text-subtle)" }}>#{waitlistPosition}</span>
                     )}
                   </p>
-                  <p className="text-white/35 text-sm mt-1">
+                  <p className="text-sm mt-1" style={{ color: "var(--text-body)" }}>
                     $100 is reserved for you when we launch.
                   </p>
                   {!surveyComplete && (
@@ -575,7 +644,8 @@ export default function Home() {
               {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="w-8 h-8 rounded-full bg-gradient-to-br from-[#C9A96E]/30 to-[#C9A96E]/5 border-2 border-[#050505] flex items-center justify-center"
+                  className="w-8 h-8 rounded-full bg-gradient-to-br from-[#C9A96E]/30 to-[#C9A96E]/5 flex items-center justify-center"
+                  style={{ border: "2px solid var(--social-proof-border)" }}
                 >
                   <span className="text-[8px] font-medium text-[#C9A96E]/80">
                     {["MD", "DO", "MD", "MD"][i]}
@@ -583,14 +653,14 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            <span className="text-xs text-white/25">
+            <span className="text-xs" style={{ color: "var(--text-muted)" }}>
               237+ physicians already on the waitlist
             </span>
           </div>
 
           {/* Bonus tag */}
           <div className="mt-6 animate-fade-in delay-600">
-            <span className="inline-flex items-center gap-2 text-[11px] sm:text-xs text-white/20">
+            <span className="inline-flex items-center gap-2 text-[11px] sm:text-xs" style={{ color: "var(--text-dim)" }}>
               <svg className="w-4 h-4 text-[#C9A96E]/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
@@ -601,7 +671,7 @@ export default function Home() {
 
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce opacity-30">
-          <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+          <svg className="w-5 h-5" style={{ color: "var(--text-heading)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </div>
@@ -630,7 +700,7 @@ export default function Home() {
                 <span className="text-gradient-gold">Points Card.</span>
                 <br />A Financial Weapon.
               </h2>
-              <p className="text-white/35 leading-relaxed mb-8 max-w-lg mx-auto lg:mx-0 text-sm sm:text-base">
+              <p className="leading-relaxed mb-8 max-w-lg mx-auto lg:mx-0 text-sm sm:text-base" style={{ color: "var(--text-body)" }}>
                 No airport lounges. No cashback on office supplies. The White Coat
                 Card is built for what actually matters — malpractice protection,
                 CME funding, practice building, and a bank that knows your MD means
@@ -652,7 +722,7 @@ export default function Home() {
                     <span className="text-lg sm:text-xl font-bold text-[#C9A96E]">
                       {feat.value}
                     </span>
-                    <span className="text-[11px] sm:text-xs text-white/25 leading-tight">{feat.label}</span>
+                    <span className="text-[11px] sm:text-xs leading-tight" style={{ color: "var(--text-muted)" }}>{feat.label}</span>
                   </div>
                 ))}
               </div>
@@ -676,7 +746,7 @@ export default function Home() {
               Built for Your Life.{" "}
               <span className="text-gradient-gold">Not Theirs.</span>
             </h2>
-            <p className="text-white/30 max-w-xl mx-auto text-sm sm:text-base">
+            <p className="max-w-xl mx-auto text-sm sm:text-base" style={{ color: "var(--text-muted)" }}>
               Every feature exists because a physician asked for it.
               No corporate retreat packages. No business class upgrades.
               Just what doctors actually need.
@@ -687,17 +757,26 @@ export default function Home() {
             {PERKS.map((perk, i) => (
               <div
                 key={perk.title}
-                className="perk-card group p-5 sm:p-6 rounded-2xl bg-white/[0.02] border border-white/[0.04] hover:border-[#C9A96E]/15 transition-all duration-300"
-                style={{ animationDelay: `${i * 100}ms` }}
+                className="perk-card group p-5 sm:p-6 rounded-2xl transition-all duration-300"
+                style={{
+                  backgroundColor: "var(--bg-surface)",
+                  border: "1px solid var(--border-card)",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(201, 169, 110, 0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.borderColor = "var(--border-card)";
+                }}
               >
-                <div className="relative z-10">
+                <div className="relative z-10" style={{ animationDelay: `${i * 100}ms` }}>
                   <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#C9A96E]/[0.08] flex items-center justify-center mb-4 group-hover:bg-[#C9A96E]/[0.12] transition-colors">
                     <PerkIcon type={perk.icon} />
                   </div>
-                  <h3 className="text-sm sm:text-[15px] font-semibold mb-2 text-white/85 group-hover:text-white transition-colors">
+                  <h3 className="text-sm sm:text-[15px] font-semibold mb-2 transition-colors" style={{ color: "var(--text-highlight)" }}>
                     {perk.title}
                   </h3>
-                  <p className="text-[13px] text-white/25 leading-relaxed group-hover:text-white/35 transition-colors">
+                  <p className="text-[13px] leading-relaxed transition-colors" style={{ color: "var(--text-muted)" }}>
                     {perk.description}
                   </p>
                 </div>
@@ -750,14 +829,14 @@ export default function Home() {
                 <div className="text-3xl sm:text-4xl font-bold text-[#C9A96E] mb-3">
                   {item.stat}
                 </div>
-                <div className="text-xs sm:text-sm text-white/25 leading-relaxed">
+                <div className="text-xs sm:text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>
                   {item.label}
                 </div>
               </div>
             ))}
           </div>
 
-          <p className="mt-12 sm:mt-16 text-white/25 max-w-2xl mx-auto leading-relaxed text-sm sm:text-base">
+          <p className="mt-12 sm:mt-16 max-w-2xl mx-auto leading-relaxed text-sm sm:text-base" style={{ color: "var(--text-muted)" }}>
             Traditional banks see a medical student with $200K in debt and say no.
             We see a future attending with one of the highest, most stable incomes in
             the country. We underwrite your license. We underwrite your potential.
@@ -784,7 +863,7 @@ export default function Home() {
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
                 Is Waiting for You.
               </h2>
-              <p className="text-white/30 max-w-lg mx-auto mb-8 leading-relaxed text-sm sm:text-base">
+              <p className="max-w-lg mx-auto mb-8 leading-relaxed text-sm sm:text-base" style={{ color: "var(--text-muted)" }}>
                 Join the waitlist today and receive $100 deposited directly into your
                 White Coat Bank account when we launch. No minimums. No catches.
               </p>
@@ -800,7 +879,12 @@ export default function Home() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@stanford.edu"
                     required
-                    className="w-full sm:flex-1 px-5 py-3.5 rounded-xl bg-black/40 border border-white/8 text-white text-sm placeholder:text-white/20 transition-all"
+                    className="w-full sm:flex-1 px-5 py-3.5 rounded-xl text-sm transition-all"
+                    style={{
+                      backgroundColor: "var(--bg-cta-input)",
+                      border: "1px solid var(--border-input)",
+                      color: "var(--text-heading)",
+                    }}
                   />
                   <button
                     type="submit"
@@ -814,13 +898,13 @@ export default function Home() {
                   <svg className="w-5 h-5 text-[#C9A96E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span className="text-[#E8D5A8] font-medium text-sm">
+                  <span className="text-[#C9A96E] font-medium text-sm">
                     You&apos;re in. $100 reserved.
                   </span>
                 </div>
               )}
 
-              <p className="mt-6 text-[11px] text-white/12">
+              <p className="mt-6 text-[11px]" style={{ color: "var(--text-faint)" }}>
                 First 500 members only. Limited spots remaining.
               </p>
             </div>
@@ -841,7 +925,7 @@ export default function Home() {
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-5 sm:mb-6">
             Built by Stanford students who lived it.
           </h2>
-          <p className="text-white/25 leading-relaxed max-w-xl mx-auto text-sm sm:text-base">
+          <p className="leading-relaxed max-w-xl mx-auto text-sm sm:text-base" style={{ color: "var(--text-muted)" }}>
             We watched our classmates — the most brilliant, dedicated people we
             know — get rejected for credit cards while pulling 80-hour weeks in
             residency. We watched banks treat future surgeons like risks instead
@@ -854,7 +938,7 @@ export default function Home() {
       {/* ============================================
           FOOTER
           ============================================ */}
-      <footer className="border-t border-white/[0.04] py-10 sm:py-12">
+      <footer className="py-10 sm:py-12" style={{ borderTop: "1px solid var(--border-footer)" }}>
         <div className="max-w-6xl mx-auto px-5 sm:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
@@ -862,11 +946,11 @@ export default function Home() {
                 <rect x="13" y="5" width="6" height="22" rx="1" />
                 <rect x="5" y="13" width="22" height="6" rx="1" />
               </svg>
-              <span className="text-xs font-semibold tracking-[0.08em] text-white/30">
+              <span className="text-xs font-semibold tracking-[0.08em]" style={{ color: "var(--text-muted)" }}>
                 WHITE COAT BANK
               </span>
             </div>
-            <div className="text-[11px] text-white/12 text-center sm:text-right max-w-md">
+            <div className="text-[11px] text-center sm:text-right max-w-md" style={{ color: "var(--text-faint)" }}>
               White Coat Bank is currently in development. Banking services will be
               provided through partner institutions. Not FDIC insured yet.
             </div>
