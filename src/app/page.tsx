@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, type ReactNode } from "react";
+import { useState, useEffect, useRef, useCallback, type ReactNode } from "react";
 
 /* ═══════════════════════════════════════════
    Reveal — one-shot fade-in on scroll
@@ -99,162 +99,299 @@ function Check() {
 }
 
 /* ═══════════════════════════════════════════
-   Metallic Credit Card
+   Parallax Background Orbs
+   ═══════════════════════════════════════════ */
+
+function BackgroundOrbs() {
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setScrollY(window.scrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      {/* Orb 1 — top left, slow drift */}
+      <div
+        className="absolute w-[500px] h-[500px] rounded-full blur-[120px]"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(20,184,166,0.035) 0%, transparent 70%)",
+          top: "5%",
+          left: "-8%",
+          transform: `translateY(${scrollY * -0.08}px)`,
+          animation: "orb-drift-1 20s ease-in-out infinite",
+        }}
+      />
+
+      {/* Orb 2 — mid right, medium drift */}
+      <div
+        className="absolute w-[450px] h-[450px] rounded-full blur-[100px]"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(20,184,166,0.025) 0%, transparent 70%)",
+          top: "35%",
+          right: "-12%",
+          transform: `translateY(${scrollY * -0.05}px)`,
+          animation: "orb-drift-2 25s ease-in-out infinite",
+        }}
+      />
+
+      {/* Orb 3 — lower center-left, fast drift */}
+      <div
+        className="absolute w-[400px] h-[400px] rounded-full blur-[100px]"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(20,184,166,0.03) 0%, transparent 70%)",
+          top: "65%",
+          left: "15%",
+          transform: `translateY(${scrollY * -0.06}px)`,
+          animation: "orb-drift-3 18s ease-in-out infinite",
+        }}
+      />
+
+      {/* Orb 4 — bottom right, subtle */}
+      <div
+        className="absolute w-[350px] h-[350px] rounded-full blur-[80px]"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(20,184,166,0.02) 0%, transparent 70%)",
+          top: "85%",
+          right: "5%",
+          transform: `translateY(${scrollY * -0.04}px)`,
+          animation: "orb-drift-1 30s ease-in-out infinite reverse",
+        }}
+      />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   Metallic Credit Card — interactive 3D tilt
    ═══════════════════════════════════════════ */
 
 function MetallicCard() {
-  return (
-    <div style={{ perspective: "1200px" }}>
-      <div
-        className="relative w-[340px] sm:w-[400px] lg:w-[420px]"
-        style={{
-          transform: "rotateY(-8deg) rotateX(5deg)",
-          transformStyle: "preserve-3d",
-        }}
-      >
-        {/* Ambient glow */}
-        <div className="absolute -inset-16 bg-teal-500/[0.04] blur-[60px] rounded-full pointer-events-none" />
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ x: 5, y: -8 });
+  const [hovering, setHovering] = useState(false);
+  const rafRef = useRef<number>(0);
 
-        {/* Card body */}
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      const el = containerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const nx = (e.clientX - cx) / (rect.width / 2);
+      const ny = (e.clientY - cy) / (rect.height / 2);
+      setTilt({ x: -ny * 18, y: nx * 18 });
+    });
+  }, []);
+
+  const handleMouseEnter = useCallback(() => setHovering(true), []);
+  const handleMouseLeave = useCallback(() => {
+    setHovering(false);
+    setTilt({ x: 5, y: -8 });
+  }, []);
+
+  return (
+    <div
+      style={{ animation: "card-float 6s ease-in-out infinite" }}
+    >
+      <div
+        ref={containerRef}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        style={{ perspective: "1200px" }}
+      >
         <div
-          className="relative aspect-[1.586/1] rounded-2xl overflow-hidden"
+          className="relative w-[340px] sm:w-[400px] lg:w-[420px]"
           style={{
-            border: "1px solid rgba(255,255,255,0.1)",
-            boxShadow: [
-              "0 50px 100px -20px rgba(0,0,0,0.6)",
-              "0 25px 50px -10px rgba(0,0,0,0.4)",
-              "inset 0 1px 0 rgba(255,255,255,0.08)",
-              "inset 0 -1px 0 rgba(0,0,0,0.3)",
-            ].join(", "),
+            transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+            transition: hovering
+              ? "transform 0.1s ease-out"
+              : "transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            transformStyle: "preserve-3d",
           }}
         >
-          {/* Layer 1: Base metal gradient */}
+          {/* Ambient glow — pulsing */}
           <div
-            className="absolute inset-0"
+            className="absolute -inset-20 rounded-full pointer-events-none"
             style={{
               background:
-                "linear-gradient(145deg, #2d2d33 0%, #393940 18%, #27272e 36%, #35353c 54%, #2a2a31 72%, #3a3a42 90%, #2d2d33 100%)",
+                "radial-gradient(circle, rgba(20,184,166,0.06) 0%, transparent 70%)",
+              animation: "glow-pulse 4s ease-in-out infinite",
             }}
           />
 
-          {/* Layer 2: Brushed metal texture */}
+          {/* Card body */}
           <div
-            className="absolute inset-0"
+            className="relative aspect-[1.586/1] rounded-2xl overflow-hidden"
             style={{
-              backgroundImage:
-                "repeating-linear-gradient(90deg, transparent 0px, rgba(255,255,255,0.018) 1px, transparent 2px, rgba(255,255,255,0.012) 3px, transparent 4px)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              boxShadow: [
+                "0 50px 100px -20px rgba(0,0,0,0.6)",
+                "0 25px 50px -10px rgba(0,0,0,0.4)",
+                "inset 0 1px 0 rgba(255,255,255,0.08)",
+                "inset 0 -1px 0 rgba(0,0,0,0.3)",
+              ].join(", "),
             }}
-          />
+          >
+            {/* Layer 1: Base metal gradient */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(145deg, #2d2d33 0%, #393940 18%, #27272e 36%, #35353c 54%, #2a2a31 72%, #3a3a42 90%, #2d2d33 100%)",
+              }}
+            />
 
-          {/* Layer 3: Diagonal light sweep */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.03) 35%, rgba(255,255,255,0.08) 45%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.08) 55%, rgba(255,255,255,0.03) 65%, transparent 80%)",
-            }}
-          />
+            {/* Layer 2: Brushed metal texture */}
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(90deg, transparent 0px, rgba(255,255,255,0.018) 1px, transparent 2px, rgba(255,255,255,0.012) 3px, transparent 4px)",
+              }}
+            />
 
-          {/* Layer 4: Top edge catch-light */}
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 12%)",
-            }}
-          />
+            {/* Layer 3: Static diagonal light (base reflection) */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(115deg, transparent 20%, rgba(255,255,255,0.02) 35%, rgba(255,255,255,0.05) 45%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.05) 55%, rgba(255,255,255,0.02) 65%, transparent 80%)",
+              }}
+            />
 
-          {/* Layer 5: Subtle teal accent along bottom edge */}
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-400/20 to-transparent" />
-
-          {/* Card content */}
-          <div className="relative h-full p-6 sm:p-8 flex flex-col justify-between">
-            {/* Top row */}
-            <div className="flex items-start justify-between">
-              <span
-                className="text-[10px] font-medium tracking-[0.2em] text-white/30 uppercase"
-                style={{
-                  textShadow: "0 1px 2px rgba(0,0,0,0.4)",
-                }}
-              >
-                White Coat Bank
-              </span>
-              <svg
-                className="w-6 h-6 text-white/15"
-                viewBox="0 0 32 32"
-                fill="none"
-              >
-                <circle
-                  cx="16"
-                  cy="16"
-                  r="11"
-                  stroke="currentColor"
-                  strokeWidth="1"
-                />
-                <rect
-                  x="14"
-                  y="9"
-                  width="4"
-                  height="14"
-                  rx="1"
-                  fill="currentColor"
-                />
-                <rect
-                  x="9"
-                  y="14"
-                  width="14"
-                  height="4"
-                  rx="1"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-
-            {/* Bottom content */}
-            <div>
-              {/* EMV chip */}
+            {/* Layer 4: Animated shimmer sweep */}
+            <div className="absolute inset-0 overflow-hidden">
               <div
-                className="relative w-11 h-8 rounded-md overflow-hidden mb-5"
+                className="absolute inset-y-0 w-[60%]"
                 style={{
                   background:
-                    "linear-gradient(135deg, #8a8a7e 0%, #b5b5a8 20%, #8a8a7e 40%, #a5a598 60%, #8a8a7e 80%, #9a9a8e 100%)",
+                    "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 30%, rgba(255,255,255,0.14) 50%, rgba(255,255,255,0.06) 70%, transparent 100%)",
+                  animation: "card-shimmer 7s ease-in-out infinite",
+                  animationDelay: "2s",
                 }}
-              >
-                <div className="absolute inset-[3px] rounded-sm border border-black/15" />
-                <div className="absolute left-0 right-0 top-1/2 h-px bg-black/10" />
-                <div className="absolute top-0 bottom-0 left-[38%] w-px bg-black/10" />
-                <div className="absolute top-0 bottom-0 left-[62%] w-px bg-black/10" />
-              </div>
+              />
+            </div>
 
-              {/* Card number */}
-              <div
-                className="text-[13px] tracking-[0.35em] text-white/25 font-mono mb-3"
-                style={{
-                  textShadow:
-                    "0 1px 2px rgba(0,0,0,0.3), 0 -1px 0 rgba(255,255,255,0.04)",
-                }}
-              >
-                &bull;&bull;&bull;&bull;&ensp;&bull;&bull;&bull;&bull;&ensp;&bull;&bull;&bull;&bull;&ensp;4589
-              </div>
+            {/* Layer 5: Top edge catch-light */}
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 12%)",
+              }}
+            />
 
-              {/* Name + network */}
-              <div className="flex items-center justify-between">
+            {/* Layer 6: Subtle teal accent along bottom edge */}
+            <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-teal-400/20 to-transparent" />
+
+            {/* Card content */}
+            <div className="relative h-full p-6 sm:p-8 flex flex-col justify-between">
+              {/* Top row */}
+              <div className="flex items-start justify-between">
                 <span
-                  className="text-[11px] tracking-[0.15em] text-white/35 uppercase"
+                  className="text-[10px] font-medium tracking-[0.2em] text-white/30 uppercase"
                   style={{
-                    textShadow: "0 1px 1px rgba(0,0,0,0.3)",
+                    textShadow: "0 1px 2px rgba(0,0,0,0.4)",
                   }}
                 >
-                  Dr. Jane Smith, M.D.
+                  White Coat Bank
                 </span>
-                <span
-                  className="text-[10px] tracking-[0.12em] text-white/20 uppercase font-semibold"
+                <svg
+                  className="w-6 h-6 text-white/15"
+                  viewBox="0 0 32 32"
+                  fill="none"
+                >
+                  <circle
+                    cx="16"
+                    cy="16"
+                    r="11"
+                    stroke="currentColor"
+                    strokeWidth="1"
+                  />
+                  <rect
+                    x="14"
+                    y="9"
+                    width="4"
+                    height="14"
+                    rx="1"
+                    fill="currentColor"
+                  />
+                  <rect
+                    x="9"
+                    y="14"
+                    width="14"
+                    height="4"
+                    rx="1"
+                    fill="currentColor"
+                  />
+                </svg>
+              </div>
+
+              {/* Bottom content */}
+              <div>
+                {/* EMV chip */}
+                <div
+                  className="relative w-11 h-8 rounded-md overflow-hidden mb-5"
                   style={{
-                    textShadow: "0 1px 1px rgba(0,0,0,0.3)",
+                    background:
+                      "linear-gradient(135deg, #8a8a7e 0%, #b5b5a8 20%, #8a8a7e 40%, #a5a598 60%, #8a8a7e 80%, #9a9a8e 100%)",
                   }}
                 >
-                  Visa Infinite
-                </span>
+                  <div className="absolute inset-[3px] rounded-sm border border-black/15" />
+                  <div className="absolute left-0 right-0 top-1/2 h-px bg-black/10" />
+                  <div className="absolute top-0 bottom-0 left-[38%] w-px bg-black/10" />
+                  <div className="absolute top-0 bottom-0 left-[62%] w-px bg-black/10" />
+                </div>
+
+                {/* Card number */}
+                <div
+                  className="text-[13px] tracking-[0.35em] text-white/25 font-mono mb-3"
+                  style={{
+                    textShadow:
+                      "0 1px 2px rgba(0,0,0,0.3), 0 -1px 0 rgba(255,255,255,0.04)",
+                  }}
+                >
+                  &bull;&bull;&bull;&bull;&ensp;&bull;&bull;&bull;&bull;&ensp;&bull;&bull;&bull;&bull;&ensp;4589
+                </div>
+
+                {/* Name + network */}
+                <div className="flex items-center justify-between">
+                  <span
+                    className="text-[11px] tracking-[0.15em] text-white/35 uppercase"
+                    style={{
+                      textShadow: "0 1px 1px rgba(0,0,0,0.3)",
+                    }}
+                  >
+                    Dr. Jane Smith, M.D.
+                  </span>
+                  <span
+                    className="text-[10px] tracking-[0.12em] text-white/20 uppercase font-semibold"
+                    style={{
+                      textShadow: "0 1px 1px rgba(0,0,0,0.3)",
+                    }}
+                  >
+                    Visa Infinite
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -357,7 +494,10 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      {/* ─── PARALLAX BACKGROUND ORBS ─── */}
+      <BackgroundOrbs />
+
       {/* ─── NAV ─── */}
       <nav
         className={`fixed top-0 inset-x-0 z-50 transition-all duration-500 ${
@@ -383,7 +523,7 @@ export default function Home() {
       </nav>
 
       {/* ─── HERO — split layout ─── */}
-      <section className="pt-32 pb-20 lg:min-h-screen lg:flex lg:items-center px-6 md:px-12">
+      <section className="relative z-10 pt-32 pb-20 lg:min-h-screen lg:flex lg:items-center px-6 md:px-12">
         <div className="max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
           {/* Left: text content */}
           <div className="text-center lg:text-left order-2 lg:order-1">
@@ -411,18 +551,21 @@ export default function Home() {
 
             {/* Key benefit highlights */}
             <Reveal delay={300}>
-              <div className="flex flex-col gap-3 mt-8 items-center lg:items-start">
+              <div className="flex flex-col gap-4 mt-10 items-center lg:items-start">
                 {[
-                  "Malpractice coverage included",
-                  "0% APR through residency & fellowship",
-                  "Credit limits based on attending salary",
+                  { text: "Free malpractice insurance", highlight: "Save up to $200K/yr" },
+                  { text: "0% APR through residency & fellowship", highlight: "Zero interest" },
+                  { text: "Credit limits based on attending salary", highlight: "Up to 5x higher" },
                 ].map((b, i) => (
                   <div
                     key={i}
-                    className="flex items-center gap-3 text-[14px] text-white/50"
+                    className="flex items-center gap-3 text-[14px]"
                   >
                     <Check />
-                    {b}
+                    <span className="text-white/55">{b.text}</span>
+                    <span className="text-[11px] font-medium text-teal-400/70 bg-teal-400/[0.06] px-2.5 py-0.5 rounded-full hidden sm:inline-block">
+                      {b.highlight}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -469,7 +612,7 @@ export default function Home() {
       <Divider />
 
       {/* ─── BENEFITS ─── */}
-      <section className="py-28 md:py-36 lg:py-44 px-6 md:px-12">
+      <section className="relative z-10 py-28 md:py-36 lg:py-44 px-6 md:px-12">
         <div className="max-w-5xl mx-auto">
           <Reveal>
             <div className="text-center mb-16 md:mb-20">
@@ -488,11 +631,46 @@ export default function Home() {
             </div>
           </Reveal>
 
+          {/* Hero benefit — malpractice (full-width spotlight) */}
+          <Reveal>
+            <div className="group relative p-10 md:p-14 rounded-2xl border border-teal-400/[0.12] bg-gradient-to-br from-teal-400/[0.04] to-transparent hover:border-teal-400/[0.2] transition-all duration-500 mb-5 overflow-hidden">
+              {/* Background glow */}
+              <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-teal-400/[0.03] blur-[80px] rounded-full pointer-events-none" />
+              <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="text-teal-400">
+                      {benefits[0].icon}
+                    </div>
+                    <span className="text-[11px] font-semibold tracking-wider text-teal-400 bg-teal-400/[0.08] px-3 py-1 rounded-full uppercase">
+                      Flagship benefit
+                    </span>
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white/90 mb-3">
+                    {benefits[0].title}
+                  </h3>
+                  <p className="text-[15px] text-white/40 leading-relaxed max-w-xl">
+                    {benefits[0].desc}
+                  </p>
+                </div>
+                <div className="text-right md:text-center flex-shrink-0">
+                  <div className="text-4xl md:text-5xl font-bold text-teal-400 tracking-tight">
+                    $200K
+                  </div>
+                  <div className="text-[13px] text-white/30 mt-1">
+                    /yr coverage value
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* Remaining benefits — 2-column grid with value callouts */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
-            {benefits.map((b, i) => (
+            {benefits.slice(1).map((b, i) => (
               <Reveal key={i} delay={i * 70}>
-                <div className="group p-8 md:p-10 rounded-2xl border border-white/[0.06] bg-white/[0.015] hover:border-white/[0.1] hover:bg-white/[0.03] transition-all duration-300 h-full">
-                  <div className="flex items-center justify-between mb-6">
+                <div className="group p-8 md:p-10 rounded-2xl border border-white/[0.06] bg-white/[0.015] hover:border-white/[0.12] hover:bg-white/[0.03] transition-all duration-300 h-full">
+                  <div className="flex items-center gap-3 mb-5">
                     <div className="text-teal-400/60 group-hover:text-teal-400/80 transition-colors duration-300">
                       {b.icon}
                     </div>
@@ -500,7 +678,7 @@ export default function Home() {
                       {b.value}
                     </span>
                   </div>
-                  <h3 className="text-base font-semibold text-white/80 mb-2.5">
+                  <h3 className="text-lg font-semibold text-white/85 mb-2.5">
                     {b.title}
                   </h3>
                   <p className="text-[13.5px] text-white/30 leading-relaxed">
@@ -516,7 +694,7 @@ export default function Home() {
       <Divider />
 
       {/* ─── NUMBERS ─── */}
-      <section className="py-28 md:py-36 lg:py-44 px-6 md:px-12">
+      <section className="relative z-10 py-28 md:py-36 lg:py-44 px-6 md:px-12">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-16 md:gap-20 text-center">
             {[
@@ -542,7 +720,7 @@ export default function Home() {
       <Divider />
 
       {/* ─── THESIS ─── */}
-      <section className="py-28 md:py-36 lg:py-44 px-6 md:px-12">
+      <section className="relative z-10 py-28 md:py-36 lg:py-44 px-6 md:px-12">
         <div className="max-w-3xl mx-auto text-center">
           <Reveal>
             <span className="text-[11px] font-medium tracking-[0.25em] text-white/25 uppercase">
@@ -576,7 +754,7 @@ export default function Home() {
       <Divider />
 
       {/* ─── CTA ─── */}
-      <section id="waitlist" className="py-28 md:py-36 lg:py-44 px-6 md:px-12">
+      <section id="waitlist" className="relative z-10 py-28 md:py-36 lg:py-44 px-6 md:px-12">
         <div className="max-w-2xl mx-auto text-center">
           <Reveal>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white/90">
@@ -621,7 +799,7 @@ export default function Home() {
       </section>
 
       {/* ─── FOOTER ─── */}
-      <footer className="border-t border-white/[0.04] px-6 md:px-12">
+      <footer className="relative z-10 border-t border-white/[0.04] px-6 md:px-12">
         <div className="max-w-6xl mx-auto py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <Logo className="w-4 h-4 text-teal-400/40" />
