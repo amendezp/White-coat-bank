@@ -45,6 +45,47 @@ input:-webkit-autofill:focus {
   caret-color: rgba(255, 255, 255, 0.9);
 }
 
+/* ─── Card animations ─── */
+
+@keyframes card-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes card-shimmer {
+  0% { transform: translateX(-180%) skewX(-15deg); }
+  40% { transform: translateX(180%) skewX(-15deg); }
+  100% { transform: translateX(180%) skewX(-15deg); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* ─── Background orb animations ─── */
+
+@keyframes orb-drift-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -20px) scale(1.05); }
+  50% { transform: translate(-10px, -40px) scale(0.95); }
+  75% { transform: translate(-30px, -15px) scale(1.02); }
+}
+
+@keyframes orb-drift-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-25px, 25px) scale(1.08); }
+  66% { transform: translate(20px, -20px) scale(0.96); }
+}
+
+@keyframes orb-drift-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  20% { transform: translate(15px, 30px) scale(0.97); }
+  40% { transform: translate(-20px, 15px) scale(1.04); }
+  60% { transform: translate(-30px, -10px) scale(1.01); }
+  80% { transform: translate(10px, -25px) scale(0.98); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
