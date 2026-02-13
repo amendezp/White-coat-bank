@@ -8,9 +8,13 @@
   --color-gold-dark: #9A7B4F;
   --color-charcoal: #1a1a1a;
   --color-charcoal-light: #2a2a2a;
-  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
 
 * {
   margin: 0;
@@ -20,13 +24,16 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: #050505;
   color: #f5f5f5;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ============================================
@@ -35,11 +42,15 @@ body {
 
 .card-container {
   perspective: 1200px;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
 .credit-card {
-  width: 420px;
-  height: 265px;
+  width: 100%;
+  aspect-ratio: 1.586 / 1;
+  max-width: 420px;
   border-radius: 16px;
   background: linear-gradient(145deg, #1c1c1c 0%, #0a0a0a 40%, #141414 70%, #1c1c1c 100%);
   border: 1px solid rgba(201, 169, 110, 0.25);
@@ -143,7 +154,7 @@ body {
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -166,8 +177,8 @@ body {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotateY(-8deg) rotateX(5deg); }
-  50% { transform: translateY(-10px) rotateY(-8deg) rotateX(5deg); }
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
 }
 
 @keyframes count-up {
@@ -181,12 +192,19 @@ body {
   100% { background-position: 0% 50%; }
 }
 
+@keyframes subtle-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
 .animate-fade-in-up {
   animation: fadeInUp 0.8s ease-out forwards;
+  opacity: 0;
 }
 
 .animate-fade-in {
   animation: fadeIn 0.6s ease-out forwards;
+  opacity: 0;
 }
 
 .animate-float {
@@ -230,12 +248,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: rgba(201, 169, 110, 0.2);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: rgba(201, 169, 110, 0.4);
 }
 
 /* ============================================
@@ -264,7 +282,7 @@ body {
 .bg-radial-top {
   background: radial-gradient(
     ellipse 80% 50% at 50% 0%,
-    rgba(201, 169, 110, 0.08) 0%,
+    rgba(201, 169, 110, 0.06) 0%,
     transparent 60%
   );
 }
@@ -273,17 +291,28 @@ body {
    RESPONSIVE CARD
    ============================================ */
 
+@media (max-width: 768px) {
+  .credit-card {
+    max-width: 360px;
+    padding: 22px 26px;
+  }
+
+  .card-chip {
+    width: 40px;
+    height: 30px;
+  }
+}
+
 @media (max-width: 480px) {
   .credit-card {
-    width: 320px;
-    height: 202px;
-    padding: 20px 24px;
+    max-width: 300px;
+    padding: 18px 22px;
     border-radius: 12px;
   }
 
   .card-chip {
-    width: 36px;
-    height: 28px;
+    width: 34px;
+    height: 26px;
   }
 }
 
@@ -298,7 +327,7 @@ input[type="email"]::placeholder {
 input[type="email"]:focus {
   outline: none;
   border-color: #C9A96E;
-  box-shadow: 0 0 20px rgba(201, 169, 110, 0.15);
+  box-shadow: 0 0 0 3px rgba(201, 169, 110, 0.1), 0 0 20px rgba(201, 169, 110, 0.1);
 }
 
 /* ============================================
@@ -308,18 +337,18 @@ input[type="email"]:focus {
 .survey-option {
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .survey-option:hover {
-  border-color: rgba(201, 169, 110, 0.4);
-  background: rgba(201, 169, 110, 0.05);
+  border-color: rgba(201, 169, 110, 0.3);
+  background: rgba(201, 169, 110, 0.04);
 }
 
 .survey-option.selected {
   border-color: #C9A96E;
-  background: rgba(201, 169, 110, 0.1);
+  background: rgba(201, 169, 110, 0.08);
 }
 
 /* ============================================
@@ -331,13 +360,130 @@ input[type="email"]:focus {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(201, 169, 110, 0.2) 50%,
+    rgba(201, 169, 110, 0.15) 50%,
     transparent 100%
   );
 }
 
 /* Modal overlay */
 .modal-overlay {
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* ============================================
+   GLASS CARD EFFECT (CRED-inspired)
+   ============================================ */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(201, 169, 110, 0.15);
+}
+
+/* ============================================
+   STAT CARD
+   ============================================ */
+
+.stat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 169, 110, 0.3), transparent);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+/* ============================================
+   PERK CARD HOVER GLOW
+   ============================================ */
+
+.perk-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.perk-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(201, 169, 110, 0.06) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.perk-card:hover::after {
+  opacity: 1;
+}
+
+/* ============================================
+   PREMIUM BUTTON STYLES
+   ============================================ */
+
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.15) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.btn-primary:hover::after {
+  transform: translateX(100%);
+}
+
+/* ============================================
+   MOBILE MENU
+   ============================================ */
+
+.mobile-menu-open {
+  overflow: hidden;
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
 }
