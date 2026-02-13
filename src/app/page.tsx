@@ -413,9 +413,9 @@ const benefits = [
         <path d="M9 12l2 2 4-4" />
       </svg>
     ),
-    title: "Malpractice Coverage Included",
+    title: "Free Malpractice Insurance",
     value: "Save $12K–$200K/yr",
-    desc: "Tail coverage and prior acts included with every account. No separate policy needed. Coverage scales with your specialty and career stage.",
+    desc: "Tail coverage and prior acts included. No separate policy. No extra cost. Scales with your specialty.",
   },
   {
     icon: (
@@ -426,7 +426,7 @@ const benefits = [
     ),
     title: "0% APR Through Training",
     value: "PGY-1 through fellowship",
-    desc: "Zero interest on all purchases during residency and fellowship. Payments adjust when your attending salary begins.",
+    desc: "Zero interest during residency and fellowship. You start paying when your real salary starts.",
   },
   {
     icon: (
@@ -435,9 +435,9 @@ const benefits = [
         <path d="M16 7h6v6" />
       </svg>
     ),
-    title: "Income-Based Underwriting",
+    title: "Income-Based Credit",
     value: "Up to 5x higher limits",
-    desc: "Credit limits reflecting your projected attending income. An ortho resident gets limits matching a $600K+ earning trajectory.",
+    desc: "An ortho resident earning $68K gets the limit of someone earning $600K. Because soon, they will be.",
   },
   {
     icon: (
@@ -449,7 +449,7 @@ const benefits = [
     ),
     title: "1.9% Student Loan Refi",
     value: "Avg. $43K saved",
-    desc: "Refinance $200K–$500K in medical school debt at rates traditional banks won't offer residents or fellows.",
+    desc: "Refinance $300K in med school debt at 1.9%. Good luck getting that anywhere else.",
   },
   {
     icon: (
@@ -460,7 +460,7 @@ const benefits = [
     ),
     title: "Physician Mortgage",
     value: "0% down, no PMI",
-    desc: "Close on a home with your signed employment contract. No private mortgage insurance required, ever.",
+    desc: "Buy a home with your signed offer letter. Zero down. No PMI. Ever.",
   },
   {
     icon: (
@@ -470,7 +470,7 @@ const benefits = [
     ),
     title: "Own-Occupation Disability",
     value: "Tax-free benefit",
-    desc: "If you can't practice your specific specialty, you're covered. The single most critical insurance a physician can own.",
+    desc: "Can't practice your specialty? You're covered. The most important insurance most physicians don't have.",
   },
 ];
 
@@ -543,9 +543,8 @@ export default function Home() {
 
             <Reveal delay={200}>
               <p className="mt-6 text-lg text-white/35 leading-relaxed max-w-lg mx-auto lg:mx-0">
-                White Coat Bank underwrites your future — not just your credit
-                score. Premium financial products built around the physician
-                lifecycle.
+                We bank your future earning power — not your resident
+                salary.
               </p>
             </Reveal>
 
@@ -554,8 +553,8 @@ export default function Home() {
               <div className="flex flex-col gap-4 mt-10 items-center lg:items-start">
                 {[
                   { text: "Free malpractice insurance", highlight: "Save up to $200K/yr" },
-                  { text: "0% APR through residency & fellowship", highlight: "Zero interest" },
-                  { text: "Credit limits based on attending salary", highlight: "Up to 5x higher" },
+                  { text: "Zero interest through training", highlight: "PGY-1 to fellowship" },
+                  { text: "Credit limits matched to your future income", highlight: "Up to 5x higher" },
                 ].map((b, i) => (
                   <div
                     key={i}
@@ -594,7 +593,7 @@ export default function Home() {
 
             <Reveal delay={500}>
               <p className="mt-6 text-[13px] text-white/20 tracking-wide">
-                237+ physicians on the waitlist
+                237 physicians ahead of you
               </p>
             </Reveal>
           </div>
@@ -617,16 +616,15 @@ export default function Home() {
           <Reveal>
             <div className="text-center mb-16 md:mb-20">
               <span className="text-[11px] font-medium tracking-[0.25em] text-white/25 uppercase">
-                Physician-Grade Financial Products
+                What you get
               </span>
               <h2 className="mt-5 text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white/90">
-                Every product designed around
-                <br className="hidden sm:block" /> the physician lifecycle.
+                Six products. Zero designed
+                <br className="hidden sm:block" /> for anyone else.
               </h2>
               <p className="mt-5 text-white/30 text-lg max-w-2xl mx-auto">
-                From your first day of residency to your last day of practice.
-                Financial products that understand where you are — and where
-                you&apos;re going.
+                From match day to retirement. Not one generic product in
+                the mix.
               </p>
             </div>
           </Reveal>
@@ -643,7 +641,7 @@ export default function Home() {
                       {benefits[0].icon}
                     </div>
                     <span className="text-[11px] font-semibold tracking-wider text-teal-400 bg-teal-400/[0.08] px-3 py-1 rounded-full uppercase">
-                      Flagship benefit
+                      Included free
                     </span>
                   </div>
                   <h3 className="text-2xl md:text-3xl font-bold text-white/90 mb-3">
@@ -698,9 +696,9 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-16 md:gap-20 text-center">
             {[
-              { value: "$43K", label: "Avg. saved on loan refinancing" },
-              { value: "$200K", label: "Annual malpractice coverage value" },
-              { value: "5x", label: "Higher credit limits vs. traditional banks" },
+              { value: "$43K", label: "Saved on student loans, on average" },
+              { value: "$200K", label: "Malpractice coverage, included free" },
+              { value: "5x", label: "Higher credit limits than your current bank" },
             ].map((s, i) => (
               <Reveal key={i} delay={i * 100}>
                 <div>
@@ -736,16 +734,15 @@ export default function Home() {
 
           <Reveal delay={240}>
             <p className="mt-8 text-lg md:text-xl text-white/35 leading-relaxed">
-              We see a future physician earning $350K–$700K annually. That&apos;s
-              why we built a bank that underwrites your future earning potential —
-              not just your current balance.
+              We see someone who&apos;ll earn $10M+ over their career. So
+              we built a bank around that.
             </p>
           </Reveal>
 
           <Reveal delay={360}>
             <p className="mt-8 text-sm text-white/15">
-              Founded by Stanford-trained physicians who understand your
-              financial journey.
+              Founded by physicians. Stanford-trained. We&apos;ve been
+              where you are.
             </p>
           </Reveal>
         </div>
@@ -758,14 +755,14 @@ export default function Home() {
         <div className="max-w-2xl mx-auto text-center">
           <Reveal>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white/90">
-              Ready to bank differently?
+              You matched into medicine.
+                <br className="hidden sm:block" /> Now match into the right bank.
             </h2>
           </Reveal>
 
           <Reveal delay={120}>
             <p className="mt-6 text-lg text-white/35">
-              Join the waitlist for early access. First 500 members get $100
-              deposited at launch.
+              First 500 physicians get $100 deposited at launch.
             </p>
           </Reveal>
 
@@ -792,7 +789,7 @@ export default function Home() {
 
           <Reveal delay={360}>
             <p className="mt-8 text-[13px] text-white/15 tracking-wide">
-              237+ physicians already on the waitlist
+              237 physicians ahead of you
             </p>
           </Reveal>
         </div>
