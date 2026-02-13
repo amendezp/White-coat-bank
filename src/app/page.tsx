@@ -85,7 +85,7 @@ const SURVEY_FEATURES = [
    ============================================ */
 
 function PerkIcon({ type }: { type: string }) {
-  const iconClass = "w-6 h-6 text-[#C9A96E]";
+  const iconClass = "w-6 h-6 text-[#14B8A6]";
 
   switch (type) {
     case "shield":
@@ -185,7 +185,7 @@ function CreditCardVisual() {
         {/* Card Top Row */}
         <div className="relative z-10 flex items-start justify-between">
           <div>
-            <div className="text-[10px] sm:text-[10px] font-light tracking-[0.3em] uppercase text-[#C9A96E]/70">
+            <div className="text-[10px] sm:text-[10px] font-light tracking-[0.3em] uppercase text-[#14B8A6]/70">
               White Coat Bank
             </div>
             <div className="mt-0.5 text-[7px] sm:text-[8px] font-light tracking-[0.2em] uppercase" style={{ color: "var(--text-card-edition)" }}>
@@ -193,7 +193,7 @@ function CreditCardVisual() {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[10px] sm:text-[11px] font-semibold tracking-[0.15em] text-[#C9A96E]">
+            <div className="text-[10px] sm:text-[11px] font-semibold tracking-[0.15em] text-[#14B8A6]">
               M.D.
             </div>
           </div>
@@ -222,9 +222,10 @@ function CreditCardVisual() {
             </div>
             {/* Medical Cross Logo */}
             <div className="flex flex-col items-center">
-              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-[#C9A96E]/40" viewBox="0 0 32 32" fill="currentColor">
-                <rect x="12" y="4" width="8" height="24" rx="1" />
-                <rect x="4" y="12" width="24" height="8" rx="1" />
+              <svg className="w-6 h-6 sm:w-8 sm:h-8 text-[#14B8A6]/40" viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="12" stroke="currentColor" strokeWidth="1" fill="currentColor" fillOpacity="0.05"/>
+                <rect x="14" y="8" width="4" height="16" rx="1" fill="currentColor"/>
+                <rect x="8" y="14" width="16" height="4" rx="1" fill="currentColor"/>
               </svg>
             </div>
           </div>
@@ -322,13 +323,13 @@ function SurveyModal({
             <div
               key={i}
               className="h-0.5 flex-1 rounded-full transition-colors"
-              style={{ backgroundColor: i <= step ? "#C9A96E" : "var(--border-input)" }}
+              style={{ backgroundColor: i <= step ? "#14B8A6" : "var(--border-input)" }}
             />
           ))}
         </div>
 
         {/* Question */}
-        <div className="mb-2 text-[11px] font-medium tracking-[0.2em] uppercase text-[#C9A96E]/80">
+        <div className="mb-2 text-[11px] font-medium tracking-[0.2em] uppercase text-[#14B8A6]/80">
           Question {step + 1} of 3
         </div>
         <h3 className="text-lg sm:text-xl font-semibold mb-1" style={{ color: "var(--text-heading)" }}>{q.title}</h3>
@@ -348,11 +349,11 @@ function SurveyModal({
                 <span
                   className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors"
                   style={{
-                    borderColor: currentAnswer === option ? "#C9A96E" : "var(--survey-radio-border)",
+                    borderColor: currentAnswer === option ? "#14B8A6" : "var(--survey-radio-border)",
                   }}
                 >
                   {currentAnswer === option && (
-                    <span className="w-2.5 h-2.5 rounded-full bg-[#C9A96E]" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-[#14B8A6]" />
                   )}
                 </span>
                 <span style={{ color: currentAnswer === option ? "var(--text-heading)" : "var(--survey-unselected-text)" }}>
@@ -369,7 +370,7 @@ function SurveyModal({
           disabled={!currentAnswer}
           className="btn-primary w-full py-3.5 rounded-xl text-sm font-semibold tracking-wide transition-all"
           style={{
-            backgroundColor: currentAnswer ? "#C9A96E" : "var(--survey-disabled-bg)",
+            backgroundColor: currentAnswer ? "#14B8A6" : "var(--survey-disabled-bg)",
             color: currentAnswer ? "#000000" : "var(--survey-disabled-text)",
             cursor: currentAnswer ? "pointer" : "not-allowed",
           }}
@@ -468,12 +469,13 @@ export default function Home() {
           borderBottom: scrolled ? "1px solid var(--border-nav)" : "1px solid transparent",
         }}
       >
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 h-16 sm:h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 h-16 sm:h-20 flex items-center justify-between">
           {/* Logo */}
           <a href="#" className="flex items-center gap-2.5 group">
-            <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#C9A96E] transition-transform group-hover:scale-105" viewBox="0 0 32 32" fill="currentColor">
-              <rect x="13" y="5" width="6" height="22" rx="1" />
-              <rect x="5" y="13" width="22" height="6" rx="1" />
+            <svg className="w-6 h-6 sm:w-7 sm:h-7 text-[#14B8A6] transition-transform group-hover:scale-105" viewBox="0 0 32 32" fill="none">
+              <path d="M16 3L5 8v7c0 7.18 4.98 13.89 11 15.5 6.02-1.61 11-8.32 11-15.5V8L16 3z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.1"/>
+              <rect x="14" y="10" width="4" height="12" rx="1" fill="currentColor"/>
+              <rect x="10" y="14" width="12" height="4" rx="1" fill="currentColor"/>
             </svg>
             <span className="text-xs sm:text-sm font-semibold tracking-[0.1em]" style={{ color: "var(--text-logo)" }}>
               WHITE COAT BANK
@@ -490,7 +492,7 @@ export default function Home() {
             </button>
             <a
               href="#waitlist"
-              className="btn-primary text-xs font-semibold tracking-wide px-6 py-2.5 rounded-full bg-[#C9A96E] text-black hover:bg-[#E8D5A8] transition-colors"
+              className="btn-primary text-xs font-semibold tracking-wide px-6 py-2.5 rounded-full bg-[#14B8A6] text-black hover:bg-[#5EEAD4] transition-colors"
             >
               Join Waitlist
             </a>
@@ -536,7 +538,7 @@ export default function Home() {
               <a
                 href="#waitlist"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block w-full text-center text-sm font-semibold tracking-wide px-6 py-3 rounded-xl bg-[#C9A96E] text-black hover:bg-[#E8D5A8] transition-colors"
+                className="block w-full text-center text-sm font-semibold tracking-wide px-6 py-3 rounded-xl bg-[#14B8A6] text-black hover:bg-[#5EEAD4] transition-colors"
               >
                 Join Waitlist
               </a>
@@ -554,13 +556,13 @@ export default function Home() {
         <div className="absolute inset-0 bg-grid opacity-30" />
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full blur-[120px] pointer-events-none" style={{ backgroundColor: "var(--glow-ambient)" }} />
 
-        <div className="relative z-10 w-full max-w-5xl mx-auto px-5 sm:px-8 text-center">
+        <div className="relative z-10 w-full max-w-5xl mx-auto px-6 sm:px-10 lg:px-16 text-center">
           {/* Badge */}
           <div
             className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full mb-8 sm:mb-10 animate-fade-in"
             style={{ backgroundColor: "var(--bg-badge)", border: "1px solid var(--border-input)" }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C9A96E] animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#14B8A6] animate-pulse" />
             <span className="text-[10px] sm:text-[11px] tracking-[0.12em] uppercase font-medium" style={{ color: "var(--text-subtle)" }}>
               Now accepting early access signups
             </span>
@@ -594,7 +596,7 @@ export default function Home() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
                   required
-                  className="w-full sm:flex-1 px-5 py-3.5 rounded-xl text-sm focus:border-[#C9A96E] focus:ring-0 transition-all"
+                  className="w-full sm:flex-1 px-5 py-3.5 rounded-xl text-sm focus:border-[#14B8A6] focus:ring-0 transition-all"
                   style={{
                     backgroundColor: "var(--bg-input)",
                     border: "1px solid var(--border-input)",
@@ -603,15 +605,15 @@ export default function Home() {
                 />
                 <button
                   type="submit"
-                  className="btn-primary w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#C9A96E] text-black text-sm font-bold tracking-wide hover:bg-[#E8D5A8] transition-all"
+                  className="btn-primary w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#14B8A6] text-black text-sm font-bold tracking-wide hover:bg-[#5EEAD4] transition-all"
                 >
                   Get $100 Free
                 </button>
               </form>
             ) : (
               <div className="animate-fade-in-up max-w-md mx-auto">
-                <div className="px-6 py-5 rounded-2xl bg-[#C9A96E]/[0.06] border border-[#C9A96E]/20 text-center">
-                  <p className="text-[#C9A96E] font-semibold">
+                <div className="px-6 py-5 rounded-2xl bg-[#14B8A6]/[0.06] border border-[#14B8A6]/20 text-center">
+                  <p className="text-[#14B8A6] font-semibold">
                     You&apos;re on the list.{" "}
                     {waitlistPosition && (
                       <span style={{ color: "var(--text-subtle)" }}>#{waitlistPosition}</span>
@@ -623,13 +625,13 @@ export default function Home() {
                   {!surveyComplete && (
                     <button
                       onClick={() => setShowSurvey(true)}
-                      className="mt-3 text-xs text-[#C9A96E] hover:text-[#E8D5A8] underline underline-offset-4 transition-colors"
+                      className="mt-3 text-xs text-[#14B8A6] hover:text-[#5EEAD4] underline underline-offset-4 transition-colors"
                     >
                       Complete our 30-second survey to help shape your bank
                     </button>
                   )}
                   {surveyComplete && (
-                    <p className="mt-3 text-xs text-[#C9A96E]">
+                    <p className="mt-3 text-xs text-[#14B8A6]">
                       Survey complete — thank you, Doctor.
                     </p>
                   )}
@@ -644,10 +646,10 @@ export default function Home() {
               {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="w-8 h-8 rounded-full bg-gradient-to-br from-[#C9A96E]/30 to-[#C9A96E]/5 flex items-center justify-center"
+                  className="w-8 h-8 rounded-full bg-gradient-to-br from-[#14B8A6]/30 to-[#14B8A6]/5 flex items-center justify-center"
                   style={{ border: "2px solid var(--social-proof-border)" }}
                 >
-                  <span className="text-[8px] font-medium text-[#C9A96E]/80">
+                  <span className="text-[8px] font-medium text-[#14B8A6]/80">
                     {["MD", "DO", "MD", "MD"][i]}
                   </span>
                 </div>
@@ -661,7 +663,7 @@ export default function Home() {
           {/* Bonus tag */}
           <div className="mt-6 animate-fade-in delay-600">
             <span className="inline-flex items-center gap-2 text-[11px] sm:text-xs" style={{ color: "var(--text-dim)" }}>
-              <svg className="w-4 h-4 text-[#C9A96E]/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <svg className="w-4 h-4 text-[#14B8A6]/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               First 500 members get $100 deposited at launch
@@ -683,8 +685,8 @@ export default function Home() {
       <section className="relative py-24 sm:py-32 overflow-hidden">
         <div className="section-divider max-w-xs mx-auto mb-24 sm:mb-32" />
 
-        <div className="max-w-6xl mx-auto px-5 sm:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-12 sm:gap-16 lg:gap-24">
+        <div className="max-w-5xl mx-auto px-6 sm:px-10 lg:px-16">
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-12 sm:gap-16 lg:gap-20">
             {/* Card visual */}
             <div className="w-full max-w-[420px] flex-shrink-0 animate-float px-4 sm:px-0">
               <CreditCardVisual />
@@ -692,7 +694,7 @@ export default function Home() {
 
             {/* Card info */}
             <div className="flex-1 text-center lg:text-left">
-              <div className="text-[11px] font-medium tracking-[0.3em] uppercase text-[#C9A96E]/50 mb-4">
+              <div className="text-[11px] font-medium tracking-[0.3em] uppercase text-[#14B8A6]/50 mb-4">
                 The White Coat Card
               </div>
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-5 sm:mb-6">
@@ -719,7 +721,7 @@ export default function Home() {
                     key={feat.label}
                     className="glass-card flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3 px-4 py-3 rounded-xl"
                   >
-                    <span className="text-lg sm:text-xl font-bold text-[#C9A96E]">
+                    <span className="text-lg sm:text-xl font-bold text-[#14B8A6]">
                       {feat.value}
                     </span>
                     <span className="text-[11px] sm:text-xs leading-tight" style={{ color: "var(--text-muted)" }}>{feat.label}</span>
@@ -737,9 +739,9 @@ export default function Home() {
       <section className="relative py-24 sm:py-32">
         <div className="section-divider max-w-xs mx-auto mb-24 sm:mb-32" />
 
-        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+        <div className="max-w-5xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="text-center mb-12 sm:mb-16">
-            <div className="text-[11px] font-medium tracking-[0.3em] uppercase text-[#C9A96E]/50 mb-4">
+            <div className="text-[11px] font-medium tracking-[0.3em] uppercase text-[#14B8A6]/50 mb-4">
               Physician Perks
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight mb-4">
@@ -770,7 +772,7 @@ export default function Home() {
                 }}
               >
                 <div className="relative z-10" style={{ animationDelay: `${i * 100}ms` }}>
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#C9A96E]/[0.08] flex items-center justify-center mb-4 group-hover:bg-[#C9A96E]/[0.12] transition-colors">
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#14B8A6]/[0.08] flex items-center justify-center mb-4 group-hover:bg-[#14B8A6]/[0.12] transition-colors">
                     <PerkIcon type={perk.icon} />
                   </div>
                   <h3 className="text-sm sm:text-[15px] font-semibold mb-2 transition-colors" style={{ color: "var(--text-highlight)" }}>
@@ -792,8 +794,8 @@ export default function Home() {
       <section className="relative py-24 sm:py-32">
         <div className="section-divider max-w-xs mx-auto mb-24 sm:mb-32" />
 
-        <div className="max-w-5xl mx-auto px-5 sm:px-8 text-center">
-          <div className="text-[11px] font-medium tracking-[0.3em] uppercase text-[#C9A96E]/50 mb-4">
+        <div className="max-w-5xl mx-auto px-6 sm:px-10 lg:px-16 text-center">
+          <div className="text-[11px] font-medium tracking-[0.3em] uppercase text-[#14B8A6]/50 mb-4">
             Our Thesis
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-6 sm:mb-8">
@@ -826,7 +828,7 @@ export default function Home() {
                 key={item.stat}
                 className="stat-card glass-card p-6 sm:p-8 rounded-2xl text-center transition-all duration-300"
               >
-                <div className="text-3xl sm:text-4xl font-bold text-[#C9A96E] mb-3">
+                <div className="text-3xl sm:text-4xl font-bold text-[#14B8A6] mb-3">
                   {item.stat}
                 </div>
                 <div className="text-xs sm:text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>
@@ -840,7 +842,7 @@ export default function Home() {
             Traditional banks see a medical student with $200K in debt and say no.
             We see a future attending with one of the highest, most stable incomes in
             the country. We underwrite your license. We underwrite your potential.
-            We underwrite <span className="text-[#C9A96E] font-medium">you</span>.
+            We underwrite <span className="text-[#14B8A6] font-medium">you</span>.
           </p>
         </div>
       </section>
@@ -851,10 +853,10 @@ export default function Home() {
       <section className="relative py-24 sm:py-32">
         <div className="section-divider max-w-xs mx-auto mb-24 sm:mb-32" />
 
-        <div className="max-w-4xl mx-auto px-5 sm:px-8 text-center">
-          <div className="relative rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#C9A96E]/[0.06] to-transparent border border-[#C9A96E]/10 p-8 sm:p-12 md:p-16 overflow-hidden">
+        <div className="max-w-4xl mx-auto px-6 sm:px-10 lg:px-16 text-center">
+          <div className="relative rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#14B8A6]/[0.06] to-transparent border border-[#14B8A6]/10 p-8 sm:p-12 md:p-16 overflow-hidden">
             {/* Glow effect */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-[#C9A96E]/[0.06] rounded-full blur-[80px] pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[300px] h-[200px] bg-[#14B8A6]/[0.06] rounded-full blur-[80px] pointer-events-none" />
 
             <div className="relative z-10">
               <div className="text-6xl sm:text-7xl md:text-8xl font-bold text-gradient-gold mb-3 sm:mb-4">
@@ -888,17 +890,17 @@ export default function Home() {
                   />
                   <button
                     type="submit"
-                    className="btn-primary w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#C9A96E] text-black text-sm font-bold tracking-wide hover:bg-[#E8D5A8] transition-all"
+                    className="btn-primary w-full sm:w-auto px-8 py-3.5 rounded-xl bg-[#14B8A6] text-black text-sm font-bold tracking-wide hover:bg-[#5EEAD4] transition-all"
                   >
                     Claim My $100
                   </button>
                 </form>
               ) : (
-                <div className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#C9A96E]/[0.08] border border-[#C9A96E]/20">
-                  <svg className="w-5 h-5 text-[#C9A96E]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <div className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#14B8A6]/[0.08] border border-[#14B8A6]/20">
+                  <svg className="w-5 h-5 text-[#14B8A6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span className="text-[#C9A96E] font-medium text-sm">
+                  <span className="text-[#14B8A6] font-medium text-sm">
                     You&apos;re in. $100 reserved.
                   </span>
                 </div>
@@ -918,8 +920,8 @@ export default function Home() {
       <section className="relative py-20 sm:py-24">
         <div className="section-divider max-w-xs mx-auto mb-20 sm:mb-24" />
 
-        <div className="max-w-3xl mx-auto px-5 sm:px-8 text-center">
-          <div className="text-[11px] font-medium tracking-[0.3em] uppercase text-[#C9A96E]/50 mb-4">
+        <div className="max-w-3xl mx-auto px-6 sm:px-10 lg:px-16 text-center">
+          <div className="text-[11px] font-medium tracking-[0.3em] uppercase text-[#14B8A6]/50 mb-4">
             Our Origin
           </div>
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-5 sm:mb-6">
@@ -939,12 +941,13 @@ export default function Home() {
           FOOTER
           ============================================ */}
       <footer className="py-10 sm:py-12" style={{ borderTop: "1px solid var(--border-footer)" }}>
-        <div className="max-w-6xl mx-auto px-5 sm:px-8">
+        <div className="max-w-5xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
-              <svg className="w-5 h-5 text-[#C9A96E]/60" viewBox="0 0 32 32" fill="currentColor">
-                <rect x="13" y="5" width="6" height="22" rx="1" />
-                <rect x="5" y="13" width="22" height="6" rx="1" />
+              <svg className="w-5 h-5 text-[#14B8A6]/60" viewBox="0 0 32 32" fill="none">
+                <path d="M16 3L5 8v7c0 7.18 4.98 13.89 11 15.5 6.02-1.61 11-8.32 11-15.5V8L16 3z" stroke="currentColor" strokeWidth="1.5" fill="currentColor" fillOpacity="0.1"/>
+                <rect x="14" y="10" width="4" height="12" rx="1" fill="currentColor"/>
+                <rect x="10" y="14" width="12" height="4" rx="1" fill="currentColor"/>
               </svg>
               <span className="text-xs font-semibold tracking-[0.08em]" style={{ color: "var(--text-muted)" }}>
                 WHITE COAT BANK
