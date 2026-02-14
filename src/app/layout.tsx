@@ -20,11 +20,21 @@ export const metadata: Metadata = {
     "malpractice insurance",
     "white coat bank",
   ],
+  icons: {
+    icon: "/favicon.svg",
+  },
   openGraph: {
     title: "White Coat Bank | Banking Built for Physicians",
     description:
       "You didn't spend 12 years in training for a generic bank. Join the waitlist.",
     type: "website",
+    siteName: "White Coat Bank",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "White Coat Bank | Banking Built for Physicians",
+    description:
+      "You didn't spend 12 years in training for a generic bank. Join the waitlist.",
   },
 };
 

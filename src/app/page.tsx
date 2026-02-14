@@ -507,9 +507,13 @@ const PRODUCT_OPTIONS = [
 function SurveyModal({
   email,
   onClose,
+  position,
+  referralCode,
 }: {
   email: string;
   onClose: () => void;
+  position: number | null;
+  referralCode: string;
 }) {
   const [step, setStep] = useState(1);
   const [careerStage, setCareerStage] = useState("");
@@ -518,6 +522,18 @@ function SurveyModal({
   const [dreamFeature, setDreamFeature] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleClose = () => {
+    if (
+      submitted ||
+      window.confirm(
+        "Leave the survey? You\u2019ll lose your $100 reward.",
+      )
+    ) {
+      onClose();
+    }
+  };
 
   const toggleCard = (card: string) =>
     setCurrentCards((prev) =>
@@ -571,6 +587,10 @@ function SurveyModal({
   };
 
   if (submitted) {
+    const shareUrl = `${typeof window !== "undefined" ? window.location.origin : ""}?ref=${referralCode}`;
+    const shareText =
+      "Just joined the White Coat Bank waitlist \u2014 a bank built exclusively for physicians. Check it out:";
+
     return (
       <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
         <div className="bg-[#141416] border border-white/[0.08] rounded-2xl p-10 max-w-md w-full text-center">
@@ -592,10 +612,58 @@ function SurveyModal({
           <h3 className="text-2xl font-bold text-white/90 mb-3">
             You&apos;re locked in.
           </h3>
+          {position && (
+            <p className="text-sm text-teal-400 mb-4">
+              Position #{position} on the waitlist
+            </p>
+          )}
           <p className="text-white/40 mb-8">
             $100 will be deposited into your account at launch. We&apos;ll be in
             touch at <span className="text-white/60">{email}</span>.
           </p>
+
+          {/* Referral sharing */}
+          {referralCode && (
+            <div className="mb-8">
+              <p className="text-sm text-white/50 mb-3">
+                Share with colleagues to move up the waitlist
+              </p>
+              <div className="flex items-center gap-2 bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3">
+                <span className="text-sm text-white/60 truncate flex-1 text-left">
+                  {shareUrl}
+                </span>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(shareUrl);
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                  className="text-xs text-teal-400 font-medium px-3 py-1.5 rounded-lg bg-teal-400/[0.08] hover:bg-teal-400/[0.12] transition-colors cursor-pointer flex-shrink-0"
+                >
+                  {copied ? "Copied!" : "Copy"}
+                </button>
+              </div>
+              <div className="flex items-center justify-center gap-3 mt-4">
+                <a
+                  href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-white/40 hover:text-white/70 px-4 py-2 rounded-lg border border-white/[0.06] hover:border-white/[0.12] transition-all"
+                >
+                  Share on X
+                </a>
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-white/40 hover:text-white/70 px-4 py-2 rounded-lg border border-white/[0.06] hover:border-white/[0.12] transition-all"
+                >
+                  WhatsApp
+                </a>
+              </div>
+            </div>
+          )}
+
           <button
             onClick={onClose}
             className="px-8 py-3 rounded-full bg-teal-500 text-[#0a0a0b] font-semibold text-sm hover:bg-teal-400 transition-colors cursor-pointer"
@@ -616,7 +684,7 @@ function SurveyModal({
             Step {step} of 4
           </span>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="text-white/30 hover:text-white/60 transition-colors cursor-pointer"
           >
             <svg
@@ -831,6 +899,12 @@ export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [showSurvey, setShowSurvey] = useState(false);
   const [surveyEmail, setSurveyEmail] = useState("");
+  const [waitlistCount, setWaitlistCount] = useState<number | null>(null);
+  const [waitlistPosition, setWaitlistPosition] = useState<number | null>(
+    null,
+  );
+  const [referralCode, setReferralCode] = useState("");
+  const [formLoading, setFormLoading] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -838,12 +912,39 @@ export default function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetch("/api/waitlist")
+      .then((r) => r.json())
+      .then((d) => setWaitlistCount(d.count))
+      .catch(() => {});
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
+    if (!email || formLoading) return;
+    setFormLoading(true);
+    try {
+      const ref = new URLSearchParams(window.location.search).get("ref");
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, referredBy: ref }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setSurveyEmail(email);
+        setWaitlistPosition(data.position);
+        setReferralCode(data.referralCode);
+        setShowSurvey(true);
+        if (!data.duplicate) {
+          setWaitlistCount((prev) => (prev ?? 0) + 1);
+        }
+      }
+    } catch {
       setSurveyEmail(email);
       setShowSurvey(true);
     }
+    setFormLoading(false);
   };
 
   return (
@@ -933,13 +1034,15 @@ export default function Home() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@email.com"
-                  className="w-full sm:flex-1 h-12 px-5 rounded-full bg-white/[0.04] border border-white/[0.08] text-white/90 placeholder:text-white/20 focus:border-teal-400/30 focus:outline-none transition-colors text-sm"
+                  disabled={formLoading}
+                  className="w-full sm:flex-1 h-12 px-5 rounded-full bg-white/[0.04] border border-white/[0.08] text-white/90 placeholder:text-white/20 focus:border-teal-400/30 focus:outline-none transition-colors text-sm disabled:opacity-50"
                 />
                 <button
                   type="submit"
-                  className="w-full sm:w-auto h-12 px-7 rounded-full bg-teal-500 text-[#0a0a0b] font-semibold text-sm hover:bg-teal-400 transition-colors cursor-pointer"
+                  disabled={formLoading}
+                  className="w-full sm:w-auto h-12 px-7 rounded-full bg-teal-500 text-[#0a0a0b] font-semibold text-sm hover:bg-teal-400 transition-colors cursor-pointer disabled:opacity-70"
                 >
-                  Get $100 Free
+                  {formLoading ? "Joining\u2026" : "Get $100 Free"}
                 </button>
               </form>
             </Reveal>
@@ -947,7 +1050,11 @@ export default function Home() {
             <Reveal delay={500}>
               <p className="mt-6 text-sm text-white/25 tracking-wide">
                 Complete a 2-min survey after joining to lock in your $100.
-                <span className="block mt-1 text-white/15">237 physicians ahead of you</span>
+                <span className="block mt-1 text-white/15">
+                  {waitlistCount !== null
+                    ? `${waitlistCount} physician${waitlistCount !== 1 ? "s" : ""} ahead of you`
+                    : "Join the first 500"}
+                </span>
               </p>
             </Reveal>
           </div>
@@ -1132,13 +1239,15 @@ export default function Home() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@email.com"
-                className="w-full sm:flex-1 h-12 px-5 rounded-full bg-white/[0.04] border border-white/[0.08] text-white/90 placeholder:text-white/20 focus:border-teal-400/30 focus:outline-none transition-colors text-sm"
+                disabled={formLoading}
+                className="w-full sm:flex-1 h-12 px-5 rounded-full bg-white/[0.04] border border-white/[0.08] text-white/90 placeholder:text-white/20 focus:border-teal-400/30 focus:outline-none transition-colors text-sm disabled:opacity-50"
               />
               <button
                 type="submit"
-                className="w-full sm:w-auto h-12 px-7 rounded-full bg-teal-500 text-[#0a0a0b] font-semibold text-sm hover:bg-teal-400 transition-colors cursor-pointer"
+                disabled={formLoading}
+                className="w-full sm:w-auto h-12 px-7 rounded-full bg-teal-500 text-[#0a0a0b] font-semibold text-sm hover:bg-teal-400 transition-colors cursor-pointer disabled:opacity-70"
               >
-                Get $100 Free
+                {formLoading ? "Joining\u2026" : "Get $100 Free"}
               </button>
             </form>
           </Reveal>
@@ -1146,7 +1255,11 @@ export default function Home() {
           <Reveal delay={360}>
             <p className="mt-8 text-sm text-white/20 tracking-wide">
               Complete a 2-min survey to lock in your $100.
-              <span className="block mt-1 text-white/15">237 physicians ahead of you</span>
+              <span className="block mt-1 text-white/15">
+                {waitlistCount !== null
+                  ? `${waitlistCount} physician${waitlistCount !== 1 ? "s" : ""} ahead of you`
+                  : "Join the first 500"}
+              </span>
             </p>
           </Reveal>
         </div>
@@ -1154,16 +1267,31 @@ export default function Home() {
 
       {/* ─── FOOTER ─── */}
       <footer className="relative z-10 border-t border-white/[0.04] px-6 md:px-12">
-        <div className="max-w-6xl mx-auto py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <Logo className="w-4 h-4 text-teal-400/40" />
-            <span className="text-[13px] text-white/20">
-              White Coat Bank &middot; Exclusively for physicians
+        <div className="max-w-6xl mx-auto py-10">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+            <div className="flex items-center gap-2.5">
+              <Logo className="w-4 h-4 text-teal-400/40" />
+              <span className="text-[13px] text-white/20">
+                White Coat Bank &middot; Exclusively for physicians
+              </span>
+            </div>
+            <span className="text-[13px] text-white/15">
+              &copy; 2026 White Coat Bank
             </span>
           </div>
-          <span className="text-[13px] text-white/15">
-            &copy; 2026 White Coat Bank
-          </span>
+          <div className="border-t border-white/[0.04] pt-6">
+            <p className="text-[11px] text-white/10 leading-relaxed max-w-3xl mx-auto text-center">
+              White Coat Bank is a financial technology company, not a bank.
+              Banking services will be provided by a partner bank, Member FDIC.
+              Products described on this page represent planned offerings and are
+              subject to change. The $100 launch deposit is available to the
+              first 500 waitlist members who complete the onboarding survey and
+              open a qualifying account. All credit products are subject to
+              credit approval. Rates shown are projected and may vary. This is
+              not investment advice. By joining the waitlist you agree to our
+              Terms of Service and Privacy Policy.
+            </p>
+          </div>
         </div>
       </footer>
 
@@ -1171,6 +1299,8 @@ export default function Home() {
         <SurveyModal
           email={surveyEmail}
           onClose={() => setShowSurvey(false)}
+          position={waitlistPosition}
+          referralCode={referralCode}
         />
       )}
     </div>
