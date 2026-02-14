@@ -3,7 +3,7 @@ import { promises as fs } from "fs";
 import path from "path";
 
 const DATA_FILE = path.join(process.cwd(), "survey-data.json");
-const ADMIN_KEY = process.env.SURVEY_ADMIN_KEY || "whitecoat2026";
+const ADMIN_KEY = process.env.SURVEY_ADMIN_KEY;
 
 async function readData() {
   try {
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const key = req.nextUrl.searchParams.get("key");
-  if (key !== ADMIN_KEY) {
+  if (!ADMIN_KEY || key !== ADMIN_KEY) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
