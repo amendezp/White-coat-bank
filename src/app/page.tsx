@@ -308,7 +308,7 @@ function MetallicCard() {
               {/* Top row */}
               <div className="flex items-start justify-between">
                 <span
-                  className="text-[10px] font-medium tracking-[0.2em] text-white/30 uppercase"
+                  className="text-[11px] font-medium tracking-[0.2em] text-teal-300/40 uppercase"
                   style={{
                     textShadow: "0 1px 2px rgba(0,0,0,0.4)",
                   }}
@@ -316,7 +316,7 @@ function MetallicCard() {
                   White Coat Bank
                 </span>
                 <svg
-                  className="w-6 h-6 text-white/15"
+                  className="w-6 h-6 text-teal-400/25"
                   viewBox="0 0 32 32"
                   fill="none"
                 >
@@ -364,7 +364,7 @@ function MetallicCard() {
 
                 {/* Card number */}
                 <div
-                  className="text-[13px] tracking-[0.35em] text-white/25 font-mono mb-3"
+                  className="text-[13px] tracking-[0.35em] text-teal-300/30 font-mono mb-3"
                   style={{
                     textShadow:
                       "0 1px 2px rgba(0,0,0,0.3), 0 -1px 0 rgba(255,255,255,0.04)",
@@ -376,7 +376,7 @@ function MetallicCard() {
                 {/* Name + network */}
                 <div className="flex items-center justify-between">
                   <span
-                    className="text-[11px] tracking-[0.15em] text-white/35 uppercase"
+                    className="text-xs tracking-[0.15em] text-teal-300/45 uppercase"
                     style={{
                       textShadow: "0 1px 1px rgba(0,0,0,0.3)",
                     }}
@@ -384,7 +384,7 @@ function MetallicCard() {
                     Dr. Jane Smith, M.D.
                   </span>
                   <span
-                    className="text-[10px] tracking-[0.12em] text-white/20 uppercase font-semibold"
+                    className="text-[11px] tracking-[0.12em] text-teal-300/30 uppercase font-semibold"
                     style={{
                       textShadow: "0 1px 1px rgba(0,0,0,0.3)",
                     }}
@@ -475,12 +475,362 @@ const benefits = [
 ];
 
 /* ═══════════════════════════════════════════
+   Survey Modal — post-signup feedback form
+   ═══════════════════════════════════════════ */
+
+const CAREER_STAGES = [
+  "Medical Student",
+  "Resident (PGY-1 to PGY-3)",
+  "Fellow",
+  "Attending (1–5 years)",
+  "Attending (5+ years)",
+];
+
+const CARD_OPTIONS = [
+  "Chase (Sapphire, Freedom, etc.)",
+  "American Express (Gold, Platinum, etc.)",
+  "Capital One (Venture, etc.)",
+  "Citi (Double Cash, etc.)",
+  "Discover",
+  "Bank debit card only",
+];
+
+const PRODUCT_OPTIONS = [
+  "Free Malpractice Insurance",
+  "0% APR Through Training",
+  "Income-Based Credit Limits",
+  "1.9% Student Loan Refi",
+  "Physician Mortgage (0% down)",
+  "Own-Occupation Disability",
+];
+
+function SurveyModal({
+  email,
+  onClose,
+}: {
+  email: string;
+  onClose: () => void;
+}) {
+  const [step, setStep] = useState(1);
+  const [careerStage, setCareerStage] = useState("");
+  const [currentCards, setCurrentCards] = useState<string[]>([]);
+  const [topProducts, setTopProducts] = useState<string[]>([]);
+  const [dreamFeature, setDreamFeature] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const toggleCard = (card: string) =>
+    setCurrentCards((prev) =>
+      prev.includes(card) ? prev.filter((c) => c !== card) : [...prev, card],
+    );
+
+  const toggleProduct = (product: string) =>
+    setTopProducts((prev) => {
+      if (prev.includes(product)) return prev.filter((p) => p !== product);
+      if (prev.length >= 3) return prev;
+      return [...prev, product];
+    });
+
+  const canProceed =
+    (step === 1 && careerStage !== "") ||
+    (step === 2 && currentCards.length > 0) ||
+    (step === 3 && topProducts.length > 0) ||
+    step === 4;
+
+  const handleSurveySubmit = async () => {
+    setSubmitting(true);
+    try {
+      await fetch("/api/survey", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          careerStage,
+          currentCards,
+          topProducts,
+          dreamFeature,
+          submittedAt: new Date().toISOString(),
+        }),
+      });
+    } catch {
+      const existing = JSON.parse(
+        localStorage.getItem("wcb-surveys") || "[]",
+      );
+      existing.push({
+        email,
+        careerStage,
+        currentCards,
+        topProducts,
+        dreamFeature,
+        submittedAt: new Date().toISOString(),
+      });
+      localStorage.setItem("wcb-surveys", JSON.stringify(existing));
+    }
+    setSubmitted(true);
+    setSubmitting(false);
+  };
+
+  if (submitted) {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+        <div className="bg-[#141416] border border-white/[0.08] rounded-2xl p-10 max-w-md w-full text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-teal-400/10 flex items-center justify-center">
+            <svg
+              className="w-8 h-8 text-teal-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+          <h3 className="text-2xl font-bold text-white/90 mb-3">
+            You&apos;re locked in.
+          </h3>
+          <p className="text-white/40 mb-8">
+            $100 will be deposited into your account at launch. We&apos;ll be in
+            touch at <span className="text-white/60">{email}</span>.
+          </p>
+          <button
+            onClick={onClose}
+            className="px-8 py-3 rounded-full bg-teal-500 text-[#0a0a0b] font-semibold text-sm hover:bg-teal-400 transition-colors cursor-pointer"
+          >
+            Done
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+      <div className="bg-[#141416] border border-white/[0.08] rounded-2xl p-8 md:p-10 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs text-teal-400 font-medium">
+            Step {step} of 4
+          </span>
+          <button
+            onClick={onClose}
+            className="text-white/30 hover:text-white/60 transition-colors cursor-pointer"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        {/* Progress bar */}
+        <div className="h-1 bg-white/[0.06] rounded-full mb-8">
+          <div
+            className="h-full bg-teal-400 rounded-full transition-all duration-300"
+            style={{ width: `${(step / 4) * 100}%` }}
+          />
+        </div>
+
+        {/* Incentive */}
+        <div className="text-xs text-white/25 mb-6 flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
+          Complete all 4 steps to lock in your $100
+        </div>
+
+        {/* Step 1: Career stage */}
+        {step === 1 && (
+          <div>
+            <h3 className="text-xl font-bold text-white/90 mb-2">
+              Where are you in your medical career?
+            </h3>
+            <p className="text-sm text-white/30 mb-6">
+              Helps us prioritize the right products for you.
+            </p>
+            <div className="flex flex-col gap-3">
+              {CAREER_STAGES.map((stage) => (
+                <button
+                  key={stage}
+                  onClick={() => setCareerStage(stage)}
+                  className={`text-left px-5 py-4 rounded-xl border transition-all text-sm cursor-pointer ${
+                    careerStage === stage
+                      ? "border-teal-400/40 bg-teal-400/[0.06] text-white/90"
+                      : "border-white/[0.06] text-white/50 hover:border-white/[0.12] hover:text-white/70"
+                  }`}
+                >
+                  {stage}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Current cards */}
+        {step === 2 && (
+          <div>
+            <h3 className="text-xl font-bold text-white/90 mb-2">
+              Which cards are in your wallet?
+            </h3>
+            <p className="text-sm text-white/30 mb-6">Select all that apply.</p>
+            <div className="flex flex-col gap-3">
+              {CARD_OPTIONS.map((card) => (
+                <button
+                  key={card}
+                  onClick={() => toggleCard(card)}
+                  className={`text-left px-5 py-4 rounded-xl border transition-all text-sm flex items-center justify-between cursor-pointer ${
+                    currentCards.includes(card)
+                      ? "border-teal-400/40 bg-teal-400/[0.06] text-white/90"
+                      : "border-white/[0.06] text-white/50 hover:border-white/[0.12] hover:text-white/70"
+                  }`}
+                >
+                  {card}
+                  {currentCards.includes(card) && (
+                    <svg
+                      className="w-4 h-4 text-teal-400 flex-shrink-0"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Most wanted products */}
+        {step === 3 && (
+          <div>
+            <h3 className="text-xl font-bold text-white/90 mb-2">
+              Which products matter most to you?
+            </h3>
+            <p className="text-sm text-white/30 mb-6">Pick your top 3.</p>
+            <div className="flex flex-col gap-3">
+              {PRODUCT_OPTIONS.map((product) => (
+                <button
+                  key={product}
+                  onClick={() => toggleProduct(product)}
+                  className={`text-left px-5 py-4 rounded-xl border transition-all text-sm flex items-center justify-between cursor-pointer ${
+                    topProducts.includes(product)
+                      ? "border-teal-400/40 bg-teal-400/[0.06] text-white/90"
+                      : topProducts.length >= 3 &&
+                          !topProducts.includes(product)
+                        ? "border-white/[0.04] text-white/20 cursor-not-allowed"
+                        : "border-white/[0.06] text-white/50 hover:border-white/[0.12] hover:text-white/70"
+                  }`}
+                >
+                  <span>{product}</span>
+                  {topProducts.includes(product) && (
+                    <span className="flex items-center gap-2">
+                      <span className="text-xs text-teal-400/70">
+                        #{topProducts.indexOf(product) + 1}
+                      </span>
+                      <svg
+                        className="w-4 h-4 text-teal-400 flex-shrink-0"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Dream feature */}
+        {step === 4 && (
+          <div>
+            <h3 className="text-xl font-bold text-white/90 mb-2">
+              If we could build one thing just for you, what would it be?
+            </h3>
+            <p className="text-sm text-white/30 mb-6">
+              Optional, but we read every answer.
+            </p>
+            <textarea
+              value={dreamFeature}
+              onChange={(e) => setDreamFeature(e.target.value)}
+              placeholder="e.g. A concierge for complex insurance claims..."
+              rows={4}
+              className="w-full px-5 py-4 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/90 placeholder:text-white/20 focus:border-teal-400/30 focus:outline-none transition-colors text-sm resize-none"
+            />
+          </div>
+        )}
+
+        {/* Navigation */}
+        <div className="flex items-center justify-between mt-8">
+          {step > 1 ? (
+            <button
+              onClick={() => setStep((s) => s - 1)}
+              className="text-sm text-white/40 hover:text-white/70 transition-colors cursor-pointer"
+            >
+              Back
+            </button>
+          ) : (
+            <div />
+          )}
+          {step < 4 ? (
+            <button
+              onClick={() => setStep((s) => s + 1)}
+              disabled={!canProceed}
+              className={`px-7 py-3 rounded-full font-semibold text-sm transition-colors ${
+                canProceed
+                  ? "bg-teal-500 text-[#0a0a0b] hover:bg-teal-400 cursor-pointer"
+                  : "bg-white/[0.06] text-white/20 cursor-not-allowed"
+              }`}
+            >
+              Next
+            </button>
+          ) : (
+            <button
+              onClick={handleSurveySubmit}
+              disabled={submitting}
+              className="px-7 py-3 rounded-full bg-teal-500 text-[#0a0a0b] font-semibold text-sm hover:bg-teal-400 transition-colors cursor-pointer disabled:opacity-50"
+            >
+              {submitting ? "Submitting\u2026" : "Submit & Lock In $100"}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════
    Page
    ═══════════════════════════════════════════ */
 
 export default function Home() {
   const [email, setEmail] = useState("");
   const [scrolled, setScrolled] = useState(false);
+  const [showSurvey, setShowSurvey] = useState(false);
+  const [surveyEmail, setSurveyEmail] = useState("");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -490,7 +840,10 @@ export default function Home() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) alert(`Thanks! We'll be in touch at ${email}.`);
+    if (email) {
+      setSurveyEmail(email);
+      setShowSurvey(true);
+    }
   };
 
   return (
@@ -509,13 +862,13 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
           <a href="#" className="flex items-center gap-3">
             <Logo className="w-7 h-7 text-teal-400" />
-            <span className="text-[13px] font-medium tracking-[0.12em] text-white/70">
+            <span className="text-sm font-medium tracking-[0.12em] text-white/70">
               WHITE COAT BANK
             </span>
           </a>
           <a
             href="#waitlist"
-            className="text-[13px] font-medium px-5 py-2.5 rounded-full border border-white/[0.12] text-white/60 hover:text-white/90 hover:border-white/[0.2] transition-all duration-300"
+            className="text-sm font-medium px-5 py-2.5 rounded-full border border-white/[0.12] text-white/60 hover:text-white/90 hover:border-white/[0.2] transition-all duration-300"
           >
             Join Waitlist
           </a>
@@ -528,7 +881,7 @@ export default function Home() {
           {/* Left: text content */}
           <div className="text-center lg:text-left order-2 lg:order-1">
             <Reveal>
-              <div className="inline-flex items-center gap-2.5 mb-8 px-4 py-2 rounded-full border border-white/[0.08] text-[13px] text-white/30 tracking-wide">
+              <div className="inline-flex items-center gap-2.5 mb-8 px-4 py-2 rounded-full border border-white/[0.08] text-sm text-white/30 tracking-wide">
                 <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
                 Exclusively for physicians
               </div>
@@ -562,7 +915,7 @@ export default function Home() {
                   >
                     <Check />
                     <span className="text-white/55">{b.text}</span>
-                    <span className="text-[11px] font-medium text-teal-400/70 bg-teal-400/[0.06] px-2.5 py-0.5 rounded-full hidden sm:inline-block">
+                    <span className="text-xs font-medium text-teal-400/70 bg-teal-400/[0.06] px-2.5 py-0.5 rounded-full hidden sm:inline-block">
                       {b.highlight}
                     </span>
                   </div>
@@ -592,8 +945,9 @@ export default function Home() {
             </Reveal>
 
             <Reveal delay={500}>
-              <p className="mt-6 text-[13px] text-white/20 tracking-wide">
-                237 physicians ahead of you
+              <p className="mt-6 text-sm text-white/25 tracking-wide">
+                Complete a 2-min survey after joining to lock in your $100.
+                <span className="block mt-1 text-white/15">237 physicians ahead of you</span>
               </p>
             </Reveal>
           </div>
@@ -615,7 +969,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           <Reveal>
             <div className="text-center mb-16 md:mb-20">
-              <span className="text-[11px] font-medium tracking-[0.25em] text-white/25 uppercase">
+              <span className="text-xs font-medium tracking-[0.25em] text-white/25 uppercase">
                 What you get
               </span>
               <h2 className="mt-5 text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white/90">
@@ -640,7 +994,7 @@ export default function Home() {
                     <div className="text-teal-400">
                       {benefits[0].icon}
                     </div>
-                    <span className="text-[11px] font-semibold tracking-wider text-teal-400 bg-teal-400/[0.08] px-3 py-1 rounded-full uppercase">
+                    <span className="text-xs font-semibold tracking-wider text-teal-400 bg-teal-400/[0.08] px-3 py-1 rounded-full uppercase">
                       Included free
                     </span>
                   </div>
@@ -655,7 +1009,7 @@ export default function Home() {
                   <div className="text-4xl md:text-5xl font-bold text-teal-400 tracking-tight">
                     $200K
                   </div>
-                  <div className="text-[13px] text-white/30 mt-1">
+                  <div className="text-sm text-white/30 mt-1">
                     /yr coverage value
                   </div>
                 </div>
@@ -672,14 +1026,14 @@ export default function Home() {
                     <div className="text-teal-400/60 group-hover:text-teal-400/80 transition-colors duration-300">
                       {b.icon}
                     </div>
-                    <span className="text-[11px] font-medium tracking-wider text-teal-400/70 bg-teal-400/[0.06] px-3 py-1 rounded-full">
+                    <span className="text-xs font-medium tracking-wider text-teal-400/70 bg-teal-400/[0.06] px-3 py-1 rounded-full">
                       {b.value}
                     </span>
                   </div>
                   <h3 className="text-lg font-semibold text-white/85 mb-2.5">
                     {b.title}
                   </h3>
-                  <p className="text-[13.5px] text-white/30 leading-relaxed">
+                  <p className="text-[15px] text-white/35 leading-relaxed">
                     {b.desc}
                   </p>
                 </div>
@@ -705,7 +1059,7 @@ export default function Home() {
                   <div className="text-4xl md:text-5xl lg:text-6xl font-bold text-teal-400 tracking-tight">
                     {s.value}
                   </div>
-                  <div className="mt-3 text-[13px] text-white/30 tracking-wide">
+                  <div className="mt-3 text-sm text-white/30 tracking-wide">
                     {s.label}
                   </div>
                 </div>
@@ -721,7 +1075,7 @@ export default function Home() {
       <section className="relative z-10 py-28 md:py-36 lg:py-44 px-6 md:px-12">
         <div className="max-w-3xl mx-auto text-center">
           <Reveal>
-            <span className="text-[11px] font-medium tracking-[0.25em] text-white/25 uppercase">
+            <span className="text-xs font-medium tracking-[0.25em] text-white/25 uppercase">
               Our Thesis
             </span>
           </Reveal>
@@ -740,7 +1094,7 @@ export default function Home() {
           </Reveal>
 
           <Reveal delay={360}>
-            <p className="mt-8 text-sm text-white/15">
+            <p className="mt-8 text-base text-white/20">
               Founded by physicians. Stanford-trained. We&apos;ve been
               where you are — and we built what we wished existed.
             </p>
@@ -761,8 +1115,10 @@ export default function Home() {
           </Reveal>
 
           <Reveal delay={120}>
-            <p className="mt-6 text-lg text-white/35">
-              First 500 physicians get $100 deposited at launch.
+            <p className="mt-6 text-lg text-white/40">
+              Join the waitlist and answer 4 quick questions.
+              <br className="hidden sm:block" />
+              First 500 physicians get $100 deposited straight into their account at launch.
             </p>
           </Reveal>
 
@@ -788,8 +1144,9 @@ export default function Home() {
           </Reveal>
 
           <Reveal delay={360}>
-            <p className="mt-8 text-[13px] text-white/15 tracking-wide">
-              237 physicians ahead of you
+            <p className="mt-8 text-sm text-white/20 tracking-wide">
+              Complete a 2-min survey to lock in your $100.
+              <span className="block mt-1 text-white/15">237 physicians ahead of you</span>
             </p>
           </Reveal>
         </div>
@@ -800,15 +1157,22 @@ export default function Home() {
         <div className="max-w-6xl mx-auto py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <Logo className="w-4 h-4 text-teal-400/40" />
-            <span className="text-[12px] text-white/20">
+            <span className="text-[13px] text-white/20">
               White Coat Bank &middot; Exclusively for physicians
             </span>
           </div>
-          <span className="text-[12px] text-white/15">
+          <span className="text-[13px] text-white/15">
             &copy; 2026 White Coat Bank
           </span>
         </div>
       </footer>
+
+      {showSurvey && (
+        <SurveyModal
+          email={surveyEmail}
+          onClose={() => setShowSurvey(false)}
+        />
+      )}
     </div>
   );
 }
