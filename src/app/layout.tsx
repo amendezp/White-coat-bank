@@ -10,7 +10,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "White Coat Bank | Banking Built for Physicians",
   description:
-    "The only bank that underwrites your future, not just your credit score. Premium banking built exclusively for doctors and medical professionals.",
+    "The only bank that underwrites your future, not your credit score. Built exclusively for physicians.",
   keywords: [
     "doctor bank",
     "physician banking",

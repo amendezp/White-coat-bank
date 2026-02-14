@@ -415,7 +415,7 @@ const benefits = [
     ),
     title: "Free Malpractice Insurance",
     value: "Save $12K–$200K/yr",
-    desc: "Tail coverage and prior acts included. No separate policy. No extra cost. Scales with your specialty.",
+    desc: "Tail coverage and prior acts included. No separate policy. No extra cost. Scales to your specialty.",
   },
   {
     icon: (
@@ -449,7 +449,7 @@ const benefits = [
     ),
     title: "1.9% Student Loan Refi",
     value: "Avg. $43K saved",
-    desc: "Refinance $300K in med school debt at 1.9%. Good luck getting that anywhere else.",
+    desc: "Refinance $300K in med school debt at 1.9%. You won't find that rate anywhere else.",
   },
   {
     icon: (
@@ -470,7 +470,7 @@ const benefits = [
     ),
     title: "Own-Occupation Disability",
     value: "Tax-free benefit",
-    desc: "Can't practice your specialty? You're covered. The most important insurance most physicians don't have.",
+    desc: "Can't practice your specialty? You're covered. The insurance most physicians need — and most don't have.",
   },
 ];
 
@@ -490,7 +490,7 @@ export default function Home() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) alert(`Thanks! We'll reach out to ${email} soon.`);
+    if (email) alert(`Thanks! We'll be in touch at ${email}.`);
   };
 
   return (
@@ -543,8 +543,8 @@ export default function Home() {
 
             <Reveal delay={200}>
               <p className="mt-6 text-lg text-white/35 leading-relaxed max-w-lg mx-auto lg:mx-0">
-                We bank your future earning power — not your resident
-                salary.
+                We underwrite your future earning power — not your
+                resident salary.
               </p>
             </Reveal>
 
@@ -554,7 +554,7 @@ export default function Home() {
                 {[
                   { text: "Free malpractice insurance", highlight: "Save up to $200K/yr" },
                   { text: "Zero interest through training", highlight: "PGY-1 to fellowship" },
-                  { text: "Credit limits matched to your future income", highlight: "Up to 5x higher" },
+                  { text: "Credit limits based on your future income", highlight: "Up to 5x higher" },
                 ].map((b, i) => (
                   <div
                     key={i}
@@ -623,8 +623,8 @@ export default function Home() {
                 <br className="hidden sm:block" /> for anyone else.
               </h2>
               <p className="mt-5 text-white/30 text-lg max-w-2xl mx-auto">
-                From match day to retirement. Not one generic product in
-                the mix.
+                From match day to retirement. Nothing generic in the
+                mix.
               </p>
             </div>
           </Reveal>
@@ -696,9 +696,9 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-16 md:gap-20 text-center">
             {[
-              { value: "$43K", label: "Saved on student loans, on average" },
+              { value: "$43K", label: "Average savings on student loans" },
               { value: "$200K", label: "Malpractice coverage, included free" },
-              { value: "5x", label: "Higher credit limits than your current bank" },
+              { value: "5x", label: "Higher credit limits than traditional banks" },
             ].map((s, i) => (
               <Reveal key={i} delay={i * 100}>
                 <div>
@@ -728,21 +728,21 @@ export default function Home() {
 
           <Reveal delay={120}>
             <h2 className="mt-8 text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-white/90 leading-[1.15]">
-              Traditional banks see a medical student and see $300K in debt.
+              Traditional banks look at a medical student and see $300K in debt.
             </h2>
           </Reveal>
 
           <Reveal delay={240}>
             <p className="mt-8 text-lg md:text-xl text-white/35 leading-relaxed">
-              We see someone who&apos;ll earn $10M+ over their career. So
-              we built a bank around that.
+              We see someone who&apos;ll earn $10M+ over their career.
+              So we built a bank around that.
             </p>
           </Reveal>
 
           <Reveal delay={360}>
             <p className="mt-8 text-sm text-white/15">
               Founded by physicians. Stanford-trained. We&apos;ve been
-              where you are.
+              where you are — and we built what we wished existed.
             </p>
           </Reveal>
         </div>
@@ -805,7 +805,7 @@ export default function Home() {
             </span>
           </div>
           <span className="text-[12px] text-white/15">
-            &copy; 2025 White Coat Bank
+            &copy; 2026 White Coat Bank
           </span>
         </div>
       </footer>
